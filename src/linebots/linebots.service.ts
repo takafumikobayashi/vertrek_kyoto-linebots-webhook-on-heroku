@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from './webhook.interface';
+import bodyParser = require('body-parser');  //  bodyParser
 
 @Injectable()
 export class LinebotsService {
@@ -10,7 +11,7 @@ export class LinebotsService {
         // X-Line-Signatureの検証
         const crypto = require('crypto');
         const channelSecret = process.env.SECRET_KEY; // Channel secret string
-        const body = req.body; // Request body string
+        const body = bodyParser.json(req.body); // Request body string
         const signature = crypto
             .createHmac('SHA256', channelSecret)
             .update(body).digest('base64');
