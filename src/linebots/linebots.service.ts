@@ -19,7 +19,7 @@ export class LinebotsService {
         text: 'テスト返信ですよ！'
         };
 
-        client.replyMessage('<replyToken>', message)
+        client.replyMessage(webhook.events[0].replyToken, message)
         .then(() => {
             
         })
