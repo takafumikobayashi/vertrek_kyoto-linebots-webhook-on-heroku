@@ -27,6 +27,7 @@ export class LinebotsController {
         async reply(@Body() webhookDto: WebhookDto, @Res() res: Response) {
             this.linebotsService.reply(webhookDto);
             a.message = 'Reply from vertrek-kyoto successfully!';
+            res.status(200);
             res.send(JSON.stringify(a));
         }
 }
