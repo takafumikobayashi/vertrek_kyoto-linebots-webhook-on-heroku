@@ -25,9 +25,7 @@ export class LinebotsService {
     }
 
     reply(webhook: Webhook) {
-        // FB Graph API SDK
-        //var FB = require('fb');
-
+        
         // Replyメッセージ作成
         const line = require('@line/bot-sdk');
         const client = new line.Client({
