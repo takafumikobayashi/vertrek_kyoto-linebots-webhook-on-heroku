@@ -25,7 +25,7 @@ export class LinebotsService {
     }
 
     reply(webhook: Webhook) {
-        
+
         // Replyメッセージ作成
         const line = require('@line/bot-sdk');
         const client = new line.Client({
@@ -42,8 +42,6 @@ export class LinebotsService {
 
         if (webhook.events[0] !== undefined) {
             for (let n = 0; n < webhook.events.length; n++) {
-
-                FB.api();
 
                 //message-typeならreply送信
                 if (webhook.events[n].type !== 'message'){
