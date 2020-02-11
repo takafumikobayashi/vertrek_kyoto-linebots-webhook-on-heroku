@@ -30,6 +30,7 @@ export class LinebotsController {
                 this.linebotsService.reply(webhookDto);
                 a.message = 'Reply from vertrek-kyoto successfully!';
             } else {
+                console.log('Reply from vertrek-kyoto failed!(X-Line-Signature)')
                 a.message = 'Reply from vertrek-kyoto failed!';
             };
             res.status(200);

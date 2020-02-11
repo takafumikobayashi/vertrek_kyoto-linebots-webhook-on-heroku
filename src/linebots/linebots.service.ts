@@ -2,7 +2,6 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from './webhook.interface';
 import bodyParser = require('body-parser');  //  bodyParser
-import { strict } from 'assert';
 
 @Injectable()
 export class LinebotsService {
@@ -26,6 +25,9 @@ export class LinebotsService {
     }
 
     reply(webhook: Webhook) {
+        // FB Graph API SDK
+        //var FB = require('fb');
+
         // Replyメッセージ作成
         const line = require('@line/bot-sdk');
         const client = new line.Client({
@@ -34,22 +36,29 @@ export class LinebotsService {
 
         const message = {
         type: 'text',
-        text: 'テスト返信ですよ！'
+        text: 'メッセージありがとうございます！ vertrek_kyotoのinstagram投稿から素敵な写真をお送りします！'
         };
-
-        client.replyMessage(webhook.events[0].replyToken, message)
-        .then(() => {
-            
-        })
-        .catch((err) => {
-            // error handling
-        });
 
         // webhookから受信した内容を標準出力に表示
         console.log('destination: ' + webhook.destination);
 
         if (webhook.events[0] !== undefined) {
             for (let n = 0; n < webhook.events.length; n++) {
+
+                FB.api();
+
+                //message-typeならreply送信
+                if (webhook.events[n].type !== 'message'){
+                    client.replyMessage(webhook.events[n].replyToken, message)
+                        .then(() => {
+                            
+                        })
+                        .catch((err) => {
+                            // error handling
+                        });
+                }
+
+                //console.log出力（デバッグ解析用）
                 console.log('replytoken: ' + webhook.events[n].replyToken);
                 console.log('type: ' + webhook.events[n].type);
                 console.log('mode: ' + webhook.events[n].mode);
