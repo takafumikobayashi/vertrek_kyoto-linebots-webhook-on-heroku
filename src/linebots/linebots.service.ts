@@ -5,10 +5,27 @@ import { Client, OAuth }  from '@line/bot-sdk';
 @Injectable()
 export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
-    private readonly line_client: Client[] = [];
-    private readonly line_oauth: OAuth[] = [];
 
     reply(webhook: Webhook) {
+
+        // Replyメッセージ作成
+        const line = require('@line/bot-sdk');
+        const client = new line.Client({
+        channelAccessToken: process.env.ACCESS_TOKEN
+        });
+
+        const message = {
+        type: 'text',
+        text: 'テスト返信ですよ！'
+        };
+
+        client.replyMessage('<replyToken>', message)
+        .then(() => {
+            
+        })
+        .catch((err) => {
+            // error handling
+        });
 
         // webhookから受信した内容を標準出力に表示
         console.log('destination: ' + webhook.destination);
