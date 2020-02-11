@@ -2,6 +2,9 @@
   "name": "vertrek-kyoto",
   "version": "0.0.1",
   "description": "",
+  "engines": {
+    "node": "11.6.0"
+  },
   "author": "",
   "license": "MIT",
   "scripts": {
@@ -24,6 +27,7 @@
     "@nestjs/platform-express": "^6.10.14",
     "class-validator": "^0.11.0",
     "crypto": "^1.0.1",
+    "fb": "^2.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.4"
