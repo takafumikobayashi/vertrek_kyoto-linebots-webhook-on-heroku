@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Header, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Header, Res, Req } from '@nestjs/common';
 import { WebhookDto } from './webhook.dto';
 import { CommonresDto } from './commonres.dto';
 import { LinebotsService } from './linebots.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 // 共通レスポンス作成
 const a = new CommonresDto();
@@ -24,9 +24,14 @@ export class LinebotsController {
     // Webhook Reply
     @Header('content-type', 'application/json')
     @Post('/webhook')
-        async reply(@Body() webhookDto: WebhookDto, @Res() res: Response) {
-            this.linebotsService.reply(webhookDto);
-            a.message = 'Reply from vertrek-kyoto successfully!';
+        async reply(@Body() webhookDto: WebhookDto, @Res() res: Response, @Req() req: Request) {
+
+            if (this.linebotsService.check(req) === true) {
+                this.linebotsService.reply(webhookDto);
+                a.message = 'Reply from vertrek-kyoto successfully!';
+            } else {
+                a.message = 'Reply from vertrek-kyoto failed!';
+            };
             res.status(200);
             res.send(JSON.stringify(a));
         }

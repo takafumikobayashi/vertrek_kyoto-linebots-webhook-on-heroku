@@ -1,13 +1,30 @@
+import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from './webhook.interface';
-import { Client, OAuth }  from '@line/bot-sdk';
 
 @Injectable()
 export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
 
-    reply(webhook: Webhook) {
+    check(req: Request) {
+        // X-Line-Signatureの検証
+        const crypto = require('crypto');
+        const channelSecret = process.env.SECRET_KEY; // Channel secret string
+        const body = req.body; // Request body string
+        const signature = crypto
+        .createHmac('SHA256', channelSecret)
+        .update(body).digest('base64');
 
+        if(signature !== req.headers['x-line-signature']){
+            console.log('false');
+            return false;
+        } else {
+            console.log('true');
+            return true;
+        }
+    }
+
+    reply(webhook: Webhook) {
         // Replyメッセージ作成
         const line = require('@line/bot-sdk');
         const client = new line.Client({
