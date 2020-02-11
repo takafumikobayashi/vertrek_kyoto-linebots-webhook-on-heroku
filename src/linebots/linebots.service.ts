@@ -44,7 +44,7 @@ export class LinebotsService {
             for (let n = 0; n < webhook.events.length; n++) {
 
                 //message-typeならreply送信
-                if (webhook.events[n].type !== 'message'){
+                if (webhook.events[n].type === 'message'){
                     client.replyMessage(webhook.events[n].replyToken, message)
                         .then(() => {
                             
