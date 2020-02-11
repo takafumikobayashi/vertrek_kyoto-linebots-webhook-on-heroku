@@ -12,14 +12,12 @@ export class LinebotsService {
         const channelSecret = process.env.SECRET_KEY; // Channel secret string
         const body = req.body; // Request body string
         const signature = crypto
-        .createHmac('SHA256', channelSecret)
-        .update(body).digest('base64');
+            .createHmac('SHA256', channelSecret)
+            .update(body).digest('base64');
 
         if(signature !== req.headers['x-line-signature']){
-            console.log('false');
             return false;
         } else {
-            console.log('true');
             return true;
         }
     }
