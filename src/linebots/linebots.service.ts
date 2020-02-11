@@ -2,18 +2,18 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from './webhook.interface';
 import bodyParser = require('body-parser');  //  bodyParser
+import { strict } from 'assert';
 
 @Injectable()
 export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
 
     check(req: Request) {
-        var jsonparser = bodyParser.json();
-        console.log(req.body);
+        bodyParser.json();
         // X-Line-Signatureの検証
         const crypto = require('crypto');
         const channelSecret = process.env.SECRET_KEY; // Channel secret string
-        const body = req.body; // Request body string
+        const body = JSON.stringify(req.body); // Request body string
         const signature = crypto
             .createHmac('SHA256', channelSecret)
             .update(body).digest('base64');
