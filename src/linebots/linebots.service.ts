@@ -74,9 +74,13 @@ export class LinebotsService {
                                                 originalContentUrl: response.data[0].media_url,
                                                 previewImageUrl: response.data[0].media_url
                                             }; */
+
+                                            const client2 = new line.Client({
+                                                channelAccessToken: process.env.ACCESS_TOKEN
+                                                });
                                             message.text = response.data[0].media_url
                                             //Linebotsに返信
-                                            client.replyMessage(webhook.events[n].replyToken, message)
+                                            client2.replyMessage(webhook.events[n].replyToken, message)
                                                 .then(() => {
                                                     
                                                 })
@@ -87,8 +91,11 @@ export class LinebotsService {
                                     }
                                 );
                             } else {
+                                const client3 = new line.Client({
+                                    channelAccessToken: process.env.ACCESS_TOKEN
+                                    });
                                 message.text = '...すみません、該当の写真はありませんでした。'
-                                client.replyMessage(webhook.events[n].replyToken, message)
+                                client3.replyMessage(webhook.events[n].replyToken, message)
                                 .then(() => {
                                     
                                 })
