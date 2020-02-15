@@ -78,10 +78,12 @@ export class LinebotsService {
                                             const client2 = new line.Client({
                                                 channelAccessToken: process.env.ACCESS_TOKEN
                                                 });
-                                            message.text = response.data[0].media_url
-                                            console.log('message = ' + message)
+                                            const message2 = {
+                                                type: 'text',
+                                                text: response.data[0].media_url
+                                            }; 
                                             //Linebotsに返信
-                                            client2.replyMessage(webhook.events[n].replyToken, message)
+                                            client2.replyMessage(webhook.events[n].replyToken, message2)
                                                 .then(() => {
                                                     
                                                 })
@@ -95,8 +97,11 @@ export class LinebotsService {
                                 const client3 = new line.Client({
                                     channelAccessToken: process.env.ACCESS_TOKEN
                                     });
-                                message.text = '...すみません、該当の写真はありませんでした。'
-                                client3.replyMessage(webhook.events[n].replyToken, message)
+                                const message3 = {
+                                    type: 'text',
+                                    text: '...すみません、該当の写真はありませんでした。'
+                                };
+                                client3.replyMessage(webhook.events[n].replyToken, message3)
                                 .then(() => {
                                     
                                 })
