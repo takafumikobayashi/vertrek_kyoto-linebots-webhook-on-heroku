@@ -71,6 +71,7 @@ export class LinebotsService {
                                         if (response.data[0] !== undefined) {
                                             //該当ハッシュタグの画像URl取得
                                             console.log(response)
+                                            console.log('media_url=' + response.data[0].media_url)
                                             const imageurl = {
                                                 type: 'image',
                                                 originalContentUrl: response.data[0].media_url,
