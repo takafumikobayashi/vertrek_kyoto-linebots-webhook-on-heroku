@@ -79,6 +79,7 @@ export class LinebotsService {
                                                 channelAccessToken: process.env.ACCESS_TOKEN
                                                 });
                                             message.text = response.data[0].media_url
+                                            console.log('message = ' + message)
                                             //Linebotsに返信
                                             client2.replyMessage(webhook.events[n].replyToken, message)
                                                 .then(() => {
