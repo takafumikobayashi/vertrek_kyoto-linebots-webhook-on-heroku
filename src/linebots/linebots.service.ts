@@ -61,7 +61,6 @@ export class LinebotsService {
                         {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
                         function(response) {
                             if (response.data[0] !== undefined) {
-                                console.log(response.data[0].id)
                                 //FB.api - 投稿情報取得
                                 FB.api(
                                     '/' + response.data[0].id + '/top_media',
@@ -71,15 +70,14 @@ export class LinebotsService {
                                         if (response.data[0] !== undefined) {
                                             //該当ハッシュタグの画像URl取得
                                             console.log(response)
-                                            console.log('media_url=' + response.data[0].media_url)
-                                            const imageurl = {
+                                            /* const imageurl = {
                                                 type: 'image',
                                                 originalContentUrl: response.data[0].media_url,
                                                 previewImageUrl: response.data[0].media_url
-                                            };
-
+                                            }; */
+                                            message.text = response.data[0].media_url
                                             //Linebotsに返信
-                                            client.replyMessage(webhook.events[n].replyToken, imageurl)
+                                            client.replyMessage(webhook.events[n].replyToken, message)
                                                 .then(() => {
                                                     
                                                 })
