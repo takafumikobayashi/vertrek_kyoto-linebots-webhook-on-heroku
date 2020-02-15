@@ -35,7 +35,7 @@ export class LinebotsService {
 
         const message = {
         type: 'text',
-        text: 'メッセージありがとうございます！ vertrek_kyotoのinstagram投稿から素敵な写真をお送りします！'
+        text: '...すみません、該当の写真はありませんでした。'
         }; 
 
         // webhookから受信した内容を標準出力に表示
@@ -53,7 +53,7 @@ export class LinebotsService {
                             // error handling
                         });
                     */
-                   
+
                     //FB.api - ハッシュタグサーチ
                     FB.api(
                         '/ig_hashtag_search',
@@ -70,21 +70,14 @@ export class LinebotsService {
                                         if (response.data !== undefined) {
                                             //該当ハッシュタグの画像URl取得
                                             console.log(response)
-                                            /* const imageurl = {
+                                            const imageurl = {
                                                 type: 'image',
                                                 originalContentUrl: response.data[0].media_url,
                                                 previewImageUrl: response.data[0].media_url
-                                            }; */
-
-                                            const client2 = new line.Client({
-                                                channelAccessToken: process.env.ACCESS_TOKEN
-                                                });
-                                            const message2 = {
-                                                type: 'text',
-                                                text: response.data[0].media_url
                                             }; 
+ 
                                             //Linebotsに返信
-                                            client2.replyMessage(webhook.events[n].replyToken, message2)
+                                            client.replyMessage(webhook.events[n].replyToken, imageurl)
                                                 .then(() => {
                                                     
                                                 })
@@ -95,14 +88,7 @@ export class LinebotsService {
                                     }
                                 );
                             } else {
-                                const client3 = new line.Client({
-                                    channelAccessToken: process.env.ACCESS_TOKEN
-                                    });
-                                const message3 = {
-                                    type: 'text',
-                                    text: '...すみません、該当の写真はありませんでした。'
-                                };
-                                client3.replyMessage(webhook.events[n].replyToken, message3)
+                                client.replyMessage(webhook.events[n].replyToken, message)
                                 .then(() => {
                                     
                                 })
