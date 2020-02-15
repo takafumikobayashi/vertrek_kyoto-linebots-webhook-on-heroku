@@ -46,13 +46,14 @@ export class LinebotsService {
 
                 //message-typeならreply送信
                 if (webhook.events[n].type === 'message'){
-                    client.replyMessage(webhook.events[n].replyToken, message)
+                    /* client.replyMessage(webhook.events[n].replyToken, message)
                         .then(() => {  
                         })
                         .catch((err) => {
                             // error handling
                         });
-
+                    */
+                   
                     //FB.api - ハッシュタグサーチ
                     FB.api(
                         '/ig_hashtag_search',
