@@ -148,7 +148,7 @@ export class LinebotsService {
                 console.log('timestamp: ' + webhook.events[n].timestamp);
                 if (webhook.events[n].source !== undefined) {
                     console.log('source/type: ' + webhook.events[n].source.type);
-                    console.log('source/userid: ' + webhook.events[n].source.userid);    
+                    console.log('source/userId: ' + webhook.events[n].source.userId);    
                 }
                 if (webhook.events[n].message !== undefined){
                     console.log('message/id: ' + webhook.events[n].message.id);

@@ -12,7 +12,7 @@ export class Events {
     readonly timestamp: number;
     source:{
         readonly type: string;
-        readonly userid:string;
+        readonly userId:string;
     };
     message: {
         readonly id: string;

@@ -10,7 +10,7 @@ interface IEvent {
     timestamp: number;
     source:{
         type: string;
-        userid:string;
+        userId:string;
     };
     message: {
         id: string;
