@@ -46,58 +46,99 @@ export class LinebotsService {
 
                 //message-typeならreply送信
                 if (webhook.events[n].type === 'message'){
-                    /* client.replyMessage(webhook.events[n].replyToken, message)
-                        .then(() => {  
-                        })
-                        .catch((err) => {
-                            // error handling
-                        });
-                    */
 
-                    //FB.api - ハッシュタグサーチ
-                    FB.api(
-                        '/ig_hashtag_search',
-                        'GET',
-                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
-                        function(response) {
-                            if (response.data !== undefined) {
-                                //FB.api - 投稿情報取得
-                                FB.api(
-                                    '/' + response.data[0].id + '/top_media',
-                                    'GET',
-                                    {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'1','user_id':process.env.INSTA_USER_ID},
-                                    function(response) {
-                                        if (response.data !== undefined) {
-                                            //該当ハッシュタグの画像URl取得
-                                            console.log(response)
-                                            const imageurl = {
-                                                type: 'image',
-                                                originalContentUrl: response.data[0].media_url,
-                                                previewImageUrl: response.data[0].media_url
-                                            }; 
- 
-                                            //Linebotsに返信
-                                            client.replyMessage(webhook.events[n].replyToken, imageurl)
-                                                .then(() => {
-                                                    
-                                                })
-                                                .catch((err) => {
-                                                    // error handling
-                                                });
+                    if (webhook.events[n].message.text === '今日の写真'){
+                        //FB.api - 最新の投稿を表示
+                        FB.api(
+                            '/' + process.env.INSTA_USER_ID + '/media',
+                            'GET',
+                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1'},
+                            function(response) {
+                                if (response.data !== undefined) {
+                                    //FB.api - 投稿情報取得
+                                    FB.api(
+                                        '/' + response.data[0].id ,
+                                        'GET',
+                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
+                                        function(response) {
+                                            if (response.data !== undefined) {
+                                                //該当ハッシュタグの画像URl取得
+                                                console.log(response)
+                                                const imageurl = {
+                                                    type: 'image',
+                                                    originalContentUrl: response.data[0].media_url,
+                                                    previewImageUrl: response.data[0].media_url
+                                                }; 
+    
+                                                //Linebotsに返信
+                                                client.replyMessage(webhook.events[n].replyToken, imageurl)
+                                                    .then(() => {
+                                                        
+                                                    })
+                                                    .catch((err) => {
+                                                        // error handling
+                                                    });
+                                            }
                                         }
-                                    }
-                                );
-                            } else {
-                                client.replyMessage(webhook.events[n].replyToken, message)
-                                .then(() => {
-                                    
-                                })
-                                .catch((err) => {
-                                    // error handling
-                                });
+                                    );
+                                } else {
+                                    client.replyMessage(webhook.events[n].replyToken, message)
+                                    .then(() => {
+                                        
+                                    })
+                                    .catch((err) => {
+                                        // error handling
+                                    });
+                                }
                             }
-                        }
-                    );
+                        );
+
+                    } else {
+                        //FB.api - ハッシュタグサーチ
+                        FB.api(
+                            '/ig_hashtag_search',
+                            'GET',
+                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
+                            function(response) {
+                                if (response.data !== undefined) {
+                                    //FB.api - 投稿情報取得
+                                    FB.api(
+                                        '/' + response.data[0].id + '/top_media',
+                                        'GET',
+                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'1','user_id':process.env.INSTA_USER_ID},
+                                        function(response) {
+                                            if (response.data !== undefined) {
+                                                //該当ハッシュタグの画像URl取得
+                                                console.log(response)
+                                                const imageurl = {
+                                                    type: 'image',
+                                                    originalContentUrl: response.data[0].media_url,
+                                                    previewImageUrl: response.data[0].media_url
+                                                }; 
+    
+                                                //Linebotsに返信
+                                                client.replyMessage(webhook.events[n].replyToken, imageurl)
+                                                    .then(() => {
+                                                        
+                                                    })
+                                                    .catch((err) => {
+                                                        // error handling
+                                                    });
+                                            }
+                                        }
+                                    );
+                                } else {
+                                    client.replyMessage(webhook.events[n].replyToken, message)
+                                    .then(() => {
+                                        
+                                    })
+                                    .catch((err) => {
+                                        // error handling
+                                    });
+                                }
+                            }
+                        );
+                    }
                 }
 
                 //console.log出力（デバッグ解析用）
