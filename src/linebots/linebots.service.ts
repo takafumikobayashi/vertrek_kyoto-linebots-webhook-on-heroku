@@ -61,14 +61,13 @@ export class LinebotsService {
                                         'GET',
                                         {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
                                         function(response) {
-                                            console.log(response)
-                                            if (response.data !== undefined) {
+                                            if (response !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
                                                 console.log(response)
                                                 const imageurl = {
                                                     type: 'image',
-                                                    originalContentUrl: response.data[0].media_url,
-                                                    previewImageUrl: response.data[0].media_url
+                                                    originalContentUrl: response.media_url,
+                                                    previewImageUrl: response.media_url
                                                 }; 
     
                                                 //Linebotsに返信
