@@ -54,7 +54,6 @@ export class LinebotsService {
                             'GET',
                             {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
                             function(response) {
-                                console.log(response)
                                 if (response.data !== undefined) {
                                     //FB.api - 投稿情報取得
                                     FB.api(
@@ -62,6 +61,7 @@ export class LinebotsService {
                                         'GET',
                                         {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
                                         function(response) {
+                                            console.log(response)
                                             if (response.data !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
                                                 console.log(response)
