@@ -52,7 +52,7 @@ export class LinebotsService {
                         FB.api(
                             '/' + process.env.INSTA_USER_ID + '/media',
                             'GET',
-                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1'},
+                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
                             function(response) {
                                 if (response.data !== undefined) {
                                     //FB.api - 投稿情報取得
