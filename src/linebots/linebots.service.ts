@@ -69,7 +69,6 @@ export class LinebotsService {
                                         function(response) {
                                             if (response !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
-                                                console.log(response)
                                                 const imageurl = {
                                                     type: 'image',
                                                     originalContentUrl: response.media_url,
@@ -115,7 +114,6 @@ export class LinebotsService {
                                         function(response) {
                                             if (response.data !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
-                                                console.log(response)
                                                 const imageurl = {
                                                     type: 'image',
                                                     originalContentUrl: response.data[0].media_url,
