@@ -8,6 +8,7 @@ export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
 
     check(req: Request) {
+
         bodyParser.json();
         // X-Line-Signatureの検証
         const crypto = require('crypto');
@@ -26,6 +27,7 @@ export class LinebotsService {
     }
 
     reply(webhook: Webhook) {
+
         // Replyメッセージ作成
         const FB = require('fb');
         const line = require('@line/bot-sdk');
@@ -40,6 +42,10 @@ export class LinebotsService {
 
         // webhookから受信した内容を標準出力に表示
         console.log('destination: ' + webhook.destination);
+
+        //Firebaseに接続する            
+        var admin = require('firebase-admin');
+        let db = admin.firestore();
 
         if (webhook.events[0] !== undefined) {
             for (let n = 0; n < webhook.events.length; n++) {
@@ -72,12 +78,12 @@ export class LinebotsService {
     
                                                 //Linebotsに返信
                                                 client.replyMessage(webhook.events[n].replyToken, imageurl)
-                                                    .then(() => {
+                                                .then(() => {
                                                         
-                                                    })
-                                                    .catch((err) => {
-                                                        // error handling
-                                                    });
+                                                })
+                                                .catch((err) => {
+                                                    // error handling
+                                                });
                                             }
                                         }
                                     );
@@ -118,12 +124,12 @@ export class LinebotsService {
     
                                                 //Linebotsに返信
                                                 client.replyMessage(webhook.events[n].replyToken, imageurl)
-                                                    .then(() => {
+                                                .then(() => {
                                                         
-                                                    })
-                                                    .catch((err) => {
-                                                        // error handling
-                                                    });
+                                                })
+                                                .catch((err) => {
+                                                    // error handling
+                                                });
                                             }
                                         }
                                     );
@@ -139,6 +145,49 @@ export class LinebotsService {
                             }
                         );
                     }
+                }
+
+                //ユーザーIDアクティブチェック
+                if (webhook.events[n].source !== undefined) {
+                    var d = new Date();
+                    let linebotsRef = db.collection('linebots');
+                    let query = linebotsRef.where('type', '==', webhook.events[n].source.type).where('userId', '==', webhook.events[n].source.userId);
+                    query.get()
+                    .then(snapshot => {
+                        if (snapshot.empty) {
+                            console.log('### Add User documents. =>', webhook.events[n].source.userId);
+                            //ユーザー情報を登録
+                            linebotsRef.doc().set({
+                                enableFlg: true,
+                                type: webhook.events[n].source.type,
+                                userId: webhook.events[n].source.userId,
+                                updDate: d
+                            });
+                            return;
+                        }
+                        snapshot.forEach(doc => {
+                            if (webhook.events[n].type == 'unfollow'){
+                                //enableFlgをFalseに更新
+                                linebotsRef.doc(doc.id).update({
+                                    enableFlg: false,
+                                    updDate: d
+                                });
+                                console.log('### Disable User documents. =>', doc.id, ':', webhook.events[n].source.userId);
+                            } else {
+                                //enableFlgをTrueに更新
+                                if (doc.data().enableFlg == false) {
+                                    linebotsRef.doc(doc.id).update({
+                                        enableFlg: true,
+                                        updDate: d
+                                    });
+                                    console.log('### Enable User documents. =>', doc.id, ':', webhook.events[n].source.userId);
+                                }
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.log('### Error getting documents', err);
+                    });
                 }
 
                 //console.log出力（デバッグ解析用）
