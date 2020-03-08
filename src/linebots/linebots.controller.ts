@@ -36,4 +36,14 @@ export class LinebotsController {
             res.status(200);
             res.send(JSON.stringify(a));
         }
+
+    @Post('/instagram')
+        async linepush(@Body() webhookDto: WebhookDto, @Res() res: Response, @Req() req: Request) {
+
+            console.log(JSON.stringify(req.body));
+            a.message = 'Reply from vertrek-kyoto successfully!(instagram)';
+            res.status(200);
+            res.send(JSON.stringify(a));
+        }
+
 }
