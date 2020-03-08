@@ -205,4 +205,83 @@ export class LinebotsService {
             }
         }
     }
+
+    linepush() {
+        const message = {
+            type: 'text',
+            text: 'こんにちは、本日の@vertrek_kyotoの最新投稿です！'
+        }; 
+
+        //Firebaseに接続する    
+        var admin = require('firebase-admin');
+        let db = admin.firestore();
+
+        // LINE Pushメッセージ作成
+        const FB = require('fb');
+        const line = require('@line/bot-sdk');
+        const client = new line.Client({
+        channelAccessToken: process.env.ACCESS_TOKEN
+        }); 
+
+        //FB.api - 最新の投稿を表示
+        FB.api(
+            '/' + process.env.INSTA_USER_ID + '/media',
+            'GET',
+            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
+            function(response) {
+                if (response.data !== undefined) {
+                    //FB.api - 投稿情報取得
+                    FB.api(
+                        '/' + response.data[0].id ,
+                        'GET',
+                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
+                        function(response) {
+                            if (response !== undefined) {
+                                //該当ハッシュタグの画像URl取得
+                                const imageurl = {
+                                    type: 'image',
+                                    originalContentUrl: response.media_url,
+                                    previewImageUrl: response.media_url
+                                }; 
+
+                                //FirebaseからUSER情報を取得
+                                let linebotsRef = db.collection('linebots');
+                                let query = linebotsRef.where('enableFlg', '==', true);
+                                query.get()
+                                .then(snapshot => {
+                                    if (snapshot.empty) {
+                                        return;
+                                    }
+                                    snapshot.forEach(doc => {
+
+                                        console.log('push for ', doc.data().userId);
+                                        //push メッセージ送信
+                                        client.pushMessage(doc.data().userId, message)
+                                        .then(() => {
+                                            
+                                        })
+                                        .catch((err) => {
+                                            // error handling
+                                        });
+
+                                        //push 画像送信
+                                        client.pushMessage(doc.data().userId, imageurl)
+                                        .then(() => {
+                                            
+                                        })
+                                        .catch((err) => {
+                                            // error handling
+                                        });
+                                    });
+                                })
+                                .catch(err => {
+                                    console.log('### Error getting documents', err);
+                                });
+                            }
+                        }
+                    );
+                }
+            }
+        );
+    }
 }
