@@ -45,10 +45,7 @@ export class LinebotsService {
         // webhookから受信した内容を標準出力に表示
         console.log('destination: ' + webhook.destination);
 
-        //Firebaseに接続する            
-        /* var admin = require('firebase-admin');
-        let db = admin.firestore(); */
-
+        // ユーザーアクティブチェック(Firebase更新)
         this.firebaseService.userActiveCheck(webhook);
 
         if (webhook.events[0] !== undefined) {
@@ -149,49 +146,6 @@ export class LinebotsService {
                     }
                 }
 
-                //ユーザーIDアクティブチェック
-                /* if (webhook.events[n].source !== undefined) {
-                    var d = new Date();
-                    let linebotsRef = db.collection('linebots');
-                    let query = linebotsRef.where('type', '==', webhook.events[n].source.type).where('userId', '==', webhook.events[n].source.userId);
-                    query.get()
-                    .then(snapshot => {
-                        if (snapshot.empty) {
-                            console.log('### Add User documents. =>', webhook.events[n].source.userId);
-                            //ユーザー情報を登録
-                            linebotsRef.doc().set({
-                                enableFlg: true,
-                                type: webhook.events[n].source.type,
-                                userId: webhook.events[n].source.userId,
-                                updDate: d
-                            });
-                            return;
-                        }
-                        snapshot.forEach(doc => {
-                            if (webhook.events[n].type == 'unfollow'){
-                                //enableFlgをFalseに更新
-                                linebotsRef.doc(doc.id).update({
-                                    enableFlg: false,
-                                    updDate: d
-                                });
-                                console.log('### Disable User documents. =>', doc.id, ':', webhook.events[n].source.userId);
-                            } else {
-                                //enableFlgをTrueに更新
-                                if (doc.data().enableFlg == false) {
-                                    linebotsRef.doc(doc.id).update({
-                                        enableFlg: true,
-                                        updDate: d
-                                    });
-                                    console.log('### Enable User documents. =>', doc.id, ':', webhook.events[n].source.userId);
-                                }
-                            }
-                        });
-                    })
-                    .catch(err => {
-                        console.log('### Error getting documents', err);
-                    });
-                } */
-
                 //console.log出力（デバッグ解析用）
                 console.log('replytoken: ' + webhook.events[n].replyToken);
                 console.log('type: ' + webhook.events[n].type);
@@ -249,7 +203,30 @@ export class LinebotsService {
                                 }; 
 
                                 //FirebaseからUSER情報を取得
-                                let linebotsRef = db.collection('linebots');
+                                this.firebaseService.getEnableUser(function(snapshot){
+                                    snapshot.forEach(doc => {
+                                        console.log('push for ', doc.data().userId);
+                                        //push メッセージ送信
+                                        client.pushMessage(doc.data().userId, message)
+                                        .then(() => {
+                                            
+                                        })
+                                        .catch((err) => {
+                                            // error handling
+                                        });
+
+                                        //push 画像送信
+                                        client.pushMessage(doc.data().userId, imageurl)
+                                        .then(() => {
+                                            
+                                        })
+                                        .catch((err) => {
+                                            // error handling
+                                        });
+                                    });
+                                });
+
+                                /* let linebotsRef = db.collection('linebots');
                                 let query = linebotsRef.where('enableFlg', '==', true);
                                 query.get()
                                 .then(snapshot => {
@@ -280,7 +257,7 @@ export class LinebotsService {
                                 })
                                 .catch(err => {
                                     console.log('### Error getting documents', err);
-                                });
+                                }); */
                             }
                         }
                     );

@@ -8,9 +8,8 @@ export class FirebaseService {
     userActiveCheck(webhook: Webhook) {
         var admin = require('firebase-admin');
         let db = admin.firestore();
-        var d = new Date();
         let linebotsRef = db.collection('linebots');
-
+        var d = new Date();
         webhook.events.forEach(function( value ){
             let query = linebotsRef.where('type', '==', value.source.type).where('userId', '==', value.source.userId);
             query.get().then(snapshot => {
@@ -48,6 +47,19 @@ export class FirebaseService {
             .catch(err => {
                 console.log('### Error getting documents', err);
             });
+        });
+    }
+
+    getEnableUser() {
+        var admin = require('firebase-admin');
+        let db = admin.firestore();
+        let linebotsRef = db.collection('linebots');
+        let query = linebotsRef.where('enableFlg', '==', true);
+        query.get().then(snapshot => {
+            return snapshot
+        })
+        .catch(err => {
+            console.log('### Error getting documents', err);
         });
     }
 }
