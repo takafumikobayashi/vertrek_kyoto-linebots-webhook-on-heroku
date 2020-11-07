@@ -3,11 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { Webhook } from '../interface/webhook.interface';
 import { FirebaseService } from './firebase.service';
 import bodyParser = require('body-parser');  //  bodyParser
+import { LinebotsConst } from '../const/common.const';
 
 @Injectable()
 export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
-    constructor(private readonly firebaseService: FirebaseService) {}
+    constructor(
+        private readonly firebaseService: FirebaseService
+    ){};
 
     check(req: Request) {
 
@@ -39,7 +42,7 @@ export class LinebotsService {
 
         const message = {
         type: 'text',
-        text: '...すみません、該当の写真はありませんでした。'
+        text: LinebotsConst.LineBotMessage.NOT_FOUND_PICUTURE
         }; 
 
         // webhookから受信した内容を標準出力に表示
@@ -165,9 +168,10 @@ export class LinebotsService {
     }
 
     linepush() {
+
         const message = {
             type: 'text',
-            text: 'こんにちは、本日の@vertrek_kyotoの最新投稿です！'
+            text: LinebotsConst.LineBotMessage.PUSH_MESSAGE
         }; 
 
         //Firebaseに接続する    
@@ -203,30 +207,7 @@ export class LinebotsService {
                                 }; 
 
                                 //FirebaseからUSER情報を取得
-                                this.firebaseService.getEnableUser(function(snapshot){
-                                    snapshot.forEach(doc => {
-                                        console.log('push for ', doc.data().userId);
-                                        //push メッセージ送信
-                                        client.pushMessage(doc.data().userId, message)
-                                        .then(() => {
-                                            
-                                        })
-                                        .catch((err) => {
-                                            // error handling
-                                        });
-
-                                        //push 画像送信
-                                        client.pushMessage(doc.data().userId, imageurl)
-                                        .then(() => {
-                                            
-                                        })
-                                        .catch((err) => {
-                                            // error handling
-                                        });
-                                    });
-                                });
-
-                                /* let linebotsRef = db.collection('linebots');
+                                let linebotsRef = db.collection('linebots');
                                 let query = linebotsRef.where('enableFlg', '==', true);
                                 query.get()
                                 .then(snapshot => {
@@ -257,7 +238,7 @@ export class LinebotsService {
                                 })
                                 .catch(err => {
                                     console.log('### Error getting documents', err);
-                                }); */
+                                });
                             }
                         }
                     );
