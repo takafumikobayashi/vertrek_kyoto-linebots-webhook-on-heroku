@@ -212,6 +212,8 @@ export class LinebotsService {
             text: 'こんにちは、本日の@vertrek_kyotoの最新投稿です！'
         }; 
 
+        console.log("push message start");
+
         //Firebaseに接続する    
         var admin = require('firebase-admin');
         let db = admin.firestore();
