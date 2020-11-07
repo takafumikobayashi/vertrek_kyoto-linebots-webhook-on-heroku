@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Header, Res, Req } from '@nestjs/common';
-import { WebhookDto } from './webhook.dto';
-import { CommonresDto } from './commonres.dto';
-import { LinebotsService } from './linebots.service';
+import { WebhookDto } from '../interface/webhook.dto';
+import { CommonresDto } from '../interface/commonres.dto';
+import { LinebotsConst } from '../const/common.const';
+import { LinebotsService } from '../service/linebots.service';
 import { Request, Response } from 'express';
 
 // 共通レスポンス作成
@@ -17,7 +18,7 @@ export class LinebotsController {
     @Header('content-type', 'application/json')
     @Get()
         aboutapi(@Res() res: Response) {
-            a.message = 'This is Linebots webhook API from vertrek-kyoto';
+            a.message = LinebotsConst.ResMessage.APP_INFO;
             res.send(JSON.stringify(a));
         }        
 
@@ -28,10 +29,10 @@ export class LinebotsController {
 
             if (this.linebotsService.check(req) === true) {
                 this.linebotsService.reply(webhookDto);
-                a.message = 'Reply from vertrek-kyoto successfully!';
+                a.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
             } else {
                 console.log('Reply from vertrek-kyoto failed!(X-Line-Signature)')
-                a.message = 'Reply from vertrek-kyoto failed!';
+                a.message = LinebotsConst.ResMessage.FAILED_MESSAGE;
             };
             res.status(200);
             res.send(JSON.stringify(a));
@@ -42,7 +43,7 @@ export class LinebotsController {
         async linepush(@Res() res: Response) {
 
             this.linebotsService.linepush();
-            a.message = 'Reply from vertrek-kyoto successfully!(instagram)';
+            a.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
             res.status(200);
             res.send(JSON.stringify(a));
         }

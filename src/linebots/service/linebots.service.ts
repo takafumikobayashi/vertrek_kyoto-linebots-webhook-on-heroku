@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
-import { Webhook } from './webhook.interface';
+import { Webhook } from '../interface/webhook.interface';
 import bodyParser = require('body-parser');  //  bodyParser
 
 @Injectable()
