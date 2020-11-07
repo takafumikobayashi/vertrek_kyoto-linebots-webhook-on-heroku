@@ -212,8 +212,6 @@ export class LinebotsService {
             text: 'こんにちは、本日の@vertrek_kyotoの最新投稿です！'
         }; 
 
-        console.log("push message start");
-
         //Firebaseに接続する    
         var admin = require('firebase-admin');
         let db = admin.firestore();
@@ -231,6 +229,8 @@ export class LinebotsService {
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
             function(response) {
+
+                console.log("push message start");
                 if (response.data !== undefined) {
                     //FB.api - 投稿情報取得
                     FB.api(
@@ -282,6 +282,8 @@ export class LinebotsService {
                             }
                         }
                     );
+                } else {
+                    console.log("response.data undefined");
                 }
             }
         );
