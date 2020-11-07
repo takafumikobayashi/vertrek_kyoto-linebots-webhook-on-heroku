@@ -1,11 +1,13 @@
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from '../interface/webhook.interface';
+import { FirebaseService } from './firebase.service';
 import bodyParser = require('body-parser');  //  bodyParser
 
 @Injectable()
 export class LinebotsService {
     private readonly webhooks: Webhook[] = [];
+    constructor(private readonly firebaseService: FirebaseService) {}
 
     check(req: Request) {
 
@@ -44,8 +46,10 @@ export class LinebotsService {
         console.log('destination: ' + webhook.destination);
 
         //Firebaseに接続する            
-        var admin = require('firebase-admin');
-        let db = admin.firestore();
+        /* var admin = require('firebase-admin');
+        let db = admin.firestore(); */
+
+        this.firebaseService.userActiveCheck(webhook);
 
         if (webhook.events[0] !== undefined) {
             for (let n = 0; n < webhook.events.length; n++) {
@@ -146,7 +150,7 @@ export class LinebotsService {
                 }
 
                 //ユーザーIDアクティブチェック
-                if (webhook.events[n].source !== undefined) {
+                /* if (webhook.events[n].source !== undefined) {
                     var d = new Date();
                     let linebotsRef = db.collection('linebots');
                     let query = linebotsRef.where('type', '==', webhook.events[n].source.type).where('userId', '==', webhook.events[n].source.userId);
@@ -186,7 +190,7 @@ export class LinebotsService {
                     .catch(err => {
                         console.log('### Error getting documents', err);
                     });
-                }
+                } */
 
                 //console.log出力（デバッグ解析用）
                 console.log('replytoken: ' + webhook.events[n].replyToken);
