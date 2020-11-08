@@ -57,121 +57,81 @@ export class LinebotsService {
                 //message-typeならreply送信
                 if (webhook.events[n].type === 'message'){
 
-                    if (webhook.events[n].message.text === '今日の写真'){
-                        //FB.api - 最新の投稿を表示
-                        FB.api(
-                            '/' + process.env.INSTA_USER_ID + '/media',
-                            'GET',
-                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
-                            function(response) {
-                                if (response.data !== undefined) {
-                                    //FB.api - 投稿情報取得
-                                    FB.api(
-                                        '/' + response.data[0].id ,
-                                        'GET',
-                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
-                                        function(response) {
-                                            if (response !== undefined) {
-                                                //該当ハッシュタグの画像URl取得
-                                                const imageurl = {
-                                                    type: 'image',
-                                                    originalContentUrl: response.media_url,
-                                                    previewImageUrl: response.media_url
-                                                };
-                                                
-                                                //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, imageurl)
-                                                .then(() => {
-                                                    console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Todays Photo]');  
-                                                })
-                                                .catch((err) => {
-                                                    console.log(err);
-                                                });
-                                            }
-                                        }
-                                    );
-                                } else {
-                                    client.replyMessage(webhook.events[n].replyToken, message)
-                                    .then(() => {
-                                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not found INSTA-API]');
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                    });
-                                }
-                            }
-                        );
+                    //FB.api - ハッシュタグサーチ
+                    FB.api(
+                        '/ig_hashtag_search',
+                        'GET',
+                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
+                        function(response) {
+                            if (response.data !== undefined) {
+                                //FB.api - 投稿情報取得
+                                FB.api(
+                                    '/' + response.data[0].id + '/top_media',
+                                    'GET',
+                                    {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'5','user_id':process.env.INSTA_USER_ID},
+                                    function(response) {
+                                        
+                                        if (response.data !== undefined) {
+                                            var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
+                                            var template = {"type": "image_carousel"};
+                                            var columns = [];
 
-                    } else {
-                        //FB.api - ハッシュタグサーチ
-                        FB.api(
-                            '/ig_hashtag_search',
-                            'GET',
-                            {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
-                            function(response) {
-                                if (response.data !== undefined) {
-                                    //FB.api - 投稿情報取得
-                                    FB.api(
-                                        '/' + response.data[0].id + '/top_media',
-                                        'GET',
-                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'5','user_id':process.env.INSTA_USER_ID},
-                                        function(response) {
+                                            //画像カルーセルで表示
+                                            response.data.forEach(data => {
+                                                var columns_elements = {imageUrl: data.media_url}
+                                                var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
+                                                columns_elements['action'] = action
+                                                columns.push(columns_elements);
+                                            })
+
+                                            template['columns']=columns
+                                            image_carousel['template']=template
+
+                                            //該当ハッシュタグの画像URl取得
+                                            /* const imageurl = {
+                                                type: 'image',
+                                                originalContentUrl: response.data[0].media_url,
+                                                previewImageUrl: response.data[0].media_url
+                                            }; */
+
+                                            const wikimessage = {
+                                                type: 'text',
+                                                text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
+                                            };
                                             
-                                            if (response.data !== undefined) {
-                                                var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
-                                                var template = {"type": "image_carousel"};
-                                                var columns = [];
+                                            const instamessage = {
+                                                type: 'text',
+                                                text: 'Instagramでは他にも写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                            };
 
-                                                response.data.forEach(data => {
-                                                    var columns_elements = {imageUrl: data.media_url}
-                                                    var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
-                                                    columns_elements['action'] = action
-                                                    columns.push(columns_elements);
-                                                })
-
-                                                template['columns']=columns
-                                                image_carousel['template']=template
-
-                                                //該当ハッシュタグの画像URl取得
-                                                /* const imageurl = {
-                                                    type: 'image',
-                                                    originalContentUrl: response.data[0].media_url,
-                                                    previewImageUrl: response.data[0].media_url
-                                                }; */
-
-                                                const wikimessage = {
-                                                    type: 'text',
-                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
-                                                };
-                                                
-                                                const instamessage = {
-                                                    type: 'text',
-                                                    text: '他にもこんな写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
-                                                };
-
-                                                //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
-                                                .then(() => {
-                                                    console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
-                                                })
-                                                .catch((err) => {
-                                                    console.log(err);
-                                                });
-                                            }
+                                            //Linebotsに返信
+                                            client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
+                                            .then(() => {
+                                                console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
+                                            })
+                                            .catch((err) => {
+                                                console.log(err);
+                                            });
                                         }
-                                    );
-                                } else {
-                                    client.replyMessage(webhook.events[n].replyToken, message)
-                                    .then(() => {
-                                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not Found KEYWORD]');
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                    });
-                                }
+                                    }
+                                );
+                            } else {
+
+                                const instamessage = {
+                                    type: 'text',
+                                    text: 'Instagramでは他にも写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                };
+
+                                client.replyMessage(webhook.events[n].replyToken, [message, instamessage])
+                                .then(() => {
+                                    console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not Found KEYWORD]');
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
                             }
-                        );
-                    }
+                        }
+                    );
                 }
 
                 //console.log出力（デバッグ解析用）
@@ -209,7 +169,7 @@ export class LinebotsService {
         FB.api(
             '/' + process.env.INSTA_USER_ID + '/media',
             'GET',
-            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'1','user_id':process.env.INSTA_USER_ID},
+            {'access_token':process.env.INSTA_ACCESS_TOKEN,'limit':'10','user_id':process.env.INSTA_USER_ID},
             function(response) {
                 if (response.data !== undefined) {
                     //FB.api - 投稿情報取得
@@ -219,19 +179,36 @@ export class LinebotsService {
                         {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
                         function(response) {
                             if (response !== undefined) {
+
+                                var image_carousel = {type: 'template', altText: '@vertrek_kyotoに新しい写真が投稿されました！'};
+                                var template = {"type": "image_carousel"};
+                                var columns = [];
+
+                                //画像カルーセルで表示
+                                response.data.forEach(data => {
+                                    var columns_elements = {imageUrl: data.media_url}
+                                    var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
+                                    columns_elements['action'] = action
+                                    columns.push(columns_elements);
+                                })
+
+                                template['columns']=columns
+                                image_carousel['template']=template
+
                                 //Helloメッセージ
                                 const message = {
                                     type: 'text',
                                     text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
                                 };
+
                                 //該当ハッシュタグの画像URl取得
-                                const imageurl = {
+                                /* const imageurl = {
                                     type: 'image',
                                     originalContentUrl: response.media_url,
                                     previewImageUrl: response.media_url
-                                }; 
+                                }; */
                                 
-                                client.broadcast([message, imageurl], false)
+                                client.broadcast([message, image_carousel], false)
                                     .then(() => {
                                         console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
                                     })
