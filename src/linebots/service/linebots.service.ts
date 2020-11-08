@@ -135,7 +135,7 @@ export class LinebotsService {
                                                 console.log(replyarray);
     
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, imageurl, wikimessage)
+                                                client.replyMessage(webhook.events[n].replyToken, [imageurl])
                                                 .then(() => {
                                                         
                                                 })
