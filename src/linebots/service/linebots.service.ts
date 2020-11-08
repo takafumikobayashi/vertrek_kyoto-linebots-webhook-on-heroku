@@ -79,7 +79,7 @@ export class LinebotsService {
                                             //画像カルーセルで表示
                                             response.data.forEach(data => {
                                                 var columns_elements = {imageUrl: data.media_url}
-                                                var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.permalink}
+                                                var action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
                                                 columns_elements['action'] = action
                                                 columns.push(columns_elements);
                                             })
@@ -173,7 +173,7 @@ export class LinebotsService {
                     //画像カルーセルで表示
                     response.data.forEach(data => {
                         var columns_elements = {imageUrl: data.media_url}
-                        var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.permalink}
+                        var action ={type: 'uri', label: data.like_count + 'Likes!', uri: data.permalink}
                         columns_elements['action'] = action
                         columns.push(columns_elements);
                     })
