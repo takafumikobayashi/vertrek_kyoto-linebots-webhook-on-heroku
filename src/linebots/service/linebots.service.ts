@@ -82,10 +82,10 @@ export class LinebotsService {
                                                 //Linebotsに返信
                                                 client.replyMessage(webhook.events[n].replyToken, imageurl)
                                                 .then(() => {
-                                                        
+                                                    console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Todays Photo]');  
                                                 })
                                                 .catch((err) => {
-                                                    // error handling
+                                                    console.log(err);
                                                 });
                                             }
                                         }
@@ -93,10 +93,10 @@ export class LinebotsService {
                                 } else {
                                     client.replyMessage(webhook.events[n].replyToken, message)
                                     .then(() => {
-                                        
+                                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not found INSTA-API]');
                                     })
                                     .catch((err) => {
-                                        // error handling
+                                        console.log(err);
                                     });
                                 }
                             }
@@ -126,16 +126,21 @@ export class LinebotsService {
 
                                                 const wikimessage = {
                                                     type: 'text',
-                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text + '/n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
                                                 };
                                                 
+                                                const instamessage = {
+                                                    type: 'text',
+                                                    text: '他にもこんな写真があるので是非見て下さい！ https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                                };
+
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, [imageurl, wikimessage])
+                                                client.replyMessage(webhook.events[n].replyToken, [imageurl, wikimessage, instamessage])
                                                 .then(() => {
-                                                        
+                                                    console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
                                                 })
                                                 .catch((err) => {
-                                                    // error handling
+                                                    console.log(err);
                                                 });
                                             }
                                         }
@@ -143,10 +148,10 @@ export class LinebotsService {
                                 } else {
                                     client.replyMessage(webhook.events[n].replyToken, message)
                                     .then(() => {
-                                        
+                                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not Found KEYWORD]');
                                     })
                                     .catch((err) => {
-                                        // error handling
+                                        console.log(err);
                                     });
                                 }
                             }
@@ -202,7 +207,7 @@ export class LinebotsService {
                                 //Helloメッセージ
                                 const message = {
                                     type: 'text',
-                                    text: LinebotsConst.LineBotMessage.PUSH_MESSAGE
+                                    text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
                                 };
                                 //該当ハッシュタグの画像URl取得
                                 const imageurl = {
@@ -213,10 +218,10 @@ export class LinebotsService {
                                 
                                 client.broadcast([message, imageurl], false)
                                     .then(() => {
-                                            
+                                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
                                     })
                                     .catch((err) => {
-                                            // error handling
+                                        console.log(err);
                                     });
                             }
                         }
