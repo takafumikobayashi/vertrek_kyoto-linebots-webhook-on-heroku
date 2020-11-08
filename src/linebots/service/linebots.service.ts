@@ -114,15 +114,30 @@ export class LinebotsService {
                                     FB.api(
                                         '/' + response.data[0].id + '/top_media',
                                         'GET',
-                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'1','user_id':process.env.INSTA_USER_ID},
+                                        {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'5','user_id':process.env.INSTA_USER_ID},
                                         function(response) {
+                                            
                                             if (response.data !== undefined) {
+                                                var image_carousel = {type: 'templete', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
+                                                var templete = {"type": "image_carousel"};
+                                                var columns = [];
+
+                                                response.data.forEach(data => {
+                                                    var columns_elements = {imageUrl: data.media_url}
+                                                    var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
+                                                    columns_elements['action'] = action
+                                                    columns.push(columns_elements);
+                                                })
+
+                                                templete['columns']=columns
+                                                image_carousel['template']=templete
+
                                                 //該当ハッシュタグの画像URl取得
-                                                const imageurl = {
+                                                /* const imageurl = {
                                                     type: 'image',
                                                     originalContentUrl: response.data[0].media_url,
                                                     previewImageUrl: response.data[0].media_url
-                                                }; 
+                                                }; */
 
                                                 const wikimessage = {
                                                     type: 'text',
@@ -135,7 +150,7 @@ export class LinebotsService {
                                                 };
 
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, [imageurl, wikimessage, instamessage])
+                                                client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
                                                 .then(() => {
                                                     console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
                                                 })
