@@ -68,7 +68,7 @@ export class LinebotsService {
                                 FB.api(
                                     '/' + response.data[0].id + '/top_media',
                                     'GET',
-                                    {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'5','user_id':process.env.INSTA_USER_ID},
+                                    {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':'5','user_id':process.env.INSTA_USER_ID},
                                     function(response) {
                                         
                                         if (response.data !== undefined) {
@@ -79,7 +79,7 @@ export class LinebotsService {
                                             //画像カルーセルで表示
                                             response.data.forEach(data => {
                                                 var columns_elements = {imageUrl: data.media_url}
-                                                var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
+                                                var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.permalink}
                                                 columns_elements['action'] = action
                                                 columns.push(columns_elements);
                                             })
@@ -162,7 +162,7 @@ export class LinebotsService {
         FB.api(
             '/' + process.env.INSTA_USER_ID + '/media',
             'GET',
-            {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','limit':'10','user_id':process.env.INSTA_USER_ID},
+            {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':'10','user_id':process.env.INSTA_USER_ID},
             function(response) {
                 if (response.data !== undefined) {
 
@@ -173,7 +173,7 @@ export class LinebotsService {
                     //画像カルーセルで表示
                     response.data.forEach(data => {
                         var columns_elements = {imageUrl: data.media_url}
-                        var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
+                        var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.permalink}
                         columns_elements['action'] = action
                         columns.push(columns_elements);
                     })
