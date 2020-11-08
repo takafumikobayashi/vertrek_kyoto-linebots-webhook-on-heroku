@@ -118,6 +118,8 @@ export class LinebotsService {
                                         function(response) {
                                             if (response.data !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
+                                                var replyarray = [];
+
                                                 const imageurl = {
                                                     type: 'image',
                                                     originalContentUrl: response.data[0].media_url,
@@ -128,9 +130,12 @@ export class LinebotsService {
                                                     type: 'text',
                                                     message: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
                                                 };
+
+                                                replyarray.push(imageurl, wikimessage);
+                                                console.log(replyarray);
     
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, [imageurl, wikimessage])
+                                                client.replyMessage(webhook.events[n].replyToken, replyarray)
                                                 .then(() => {
                                                         
                                                 })
