@@ -128,14 +128,14 @@ export class LinebotsService {
 
                                                 const wikimessage = {
                                                     type: 'text',
-                                                    message: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
+                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
                                                 };
 
                                                 replyarray.push(imageurl, wikimessage);
                                                 console.log(replyarray);
     
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, [imageurl])
+                                                client.replyMessage(webhook.events[n].replyToken, [imageurl, wikimessage])
                                                 .then(() => {
                                                         
                                                 })
