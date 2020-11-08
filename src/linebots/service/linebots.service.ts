@@ -120,14 +120,13 @@ export class LinebotsService {
                                                 //該当ハッシュタグの画像URl取得
                                                 const imageurl = {
                                                     type: 'image',
-                                                    //originalContentUrl: response.data[0].media_url,
-                                                    originalContentUrl: 'https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                                    originalContentUrl: response.data[0].media_url,
                                                     previewImageUrl: response.data[0].media_url
                                                 }; 
 
                                                 const wikimessage = {
                                                     type: 'text',
-                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
+                                                    text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text + '/n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
                                                 };
                                                 
                                                 //Linebotsに返信
@@ -219,40 +218,6 @@ export class LinebotsService {
                                     .catch((err) => {
                                             // error handling
                                     });
-
-                                //FirebaseからUSER情報を取得
-                                /* let linebotsRef = db.collection('linebots');
-                                let query = linebotsRef.where('enableFlg', '==', true);
-                                query.get()
-                                .then(snapshot => {
-                                    if (snapshot.empty) {
-                                        return;
-                                    }
-                                    snapshot.forEach(doc => {
-
-                                        console.log('push for ', doc.data().userId);
-                                        //push メッセージ送信
-                                        client.pushMessage(doc.data().userId, message)
-                                        .then(() => {
-                                            
-                                        })
-                                        .catch((err) => {
-                                            // error handling
-                                        });
-
-                                        //push 画像送信
-                                        client.pushMessage(doc.data().userId, imageurl)
-                                        .then(() => {
-                                            
-                                        })
-                                        .catch((err) => {
-                                            // error handling
-                                        });
-                                    });
-                                })
-                                .catch(err => {
-                                    console.log('### Error getting documents', err);
-                                }); */
                             }
                         }
                     );
