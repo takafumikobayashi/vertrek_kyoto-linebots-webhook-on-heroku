@@ -77,8 +77,8 @@ export class LinebotsService {
                                                     type: 'image',
                                                     originalContentUrl: response.media_url,
                                                     previewImageUrl: response.media_url
-                                                }; 
-    
+                                                };
+                                                
                                                 //Linebotsに返信
                                                 client.replyMessage(webhook.events[n].replyToken, imageurl)
                                                 .then(() => {
@@ -118,14 +118,23 @@ export class LinebotsService {
                                         function(response) {
                                             if (response.data !== undefined) {
                                                 //該当ハッシュタグの画像URl取得
+                                                var replymessage=[];
+
                                                 const imageurl = {
                                                     type: 'image',
                                                     originalContentUrl: response.data[0].media_url,
                                                     previewImageUrl: response.data[0].media_url
                                                 }; 
+
+                                                const wikimessage = {
+                                                    type: 'text',
+                                                    message: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
+                                                };
+
+                                                replymessage.push(imageurl, wikimessage);
     
                                                 //Linebotsに返信
-                                                client.replyMessage(webhook.events[n].replyToken, imageurl)
+                                                client.replyMessage(webhook.events[n].replyToken, replymessage)
                                                 .then(() => {
                                                         
                                                 })
