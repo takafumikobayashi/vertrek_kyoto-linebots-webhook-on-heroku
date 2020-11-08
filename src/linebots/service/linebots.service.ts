@@ -120,7 +120,8 @@ export class LinebotsService {
                                                 //該当ハッシュタグの画像URl取得
                                                 const imageurl = {
                                                     type: 'image',
-                                                    originalContentUrl: response.data[0].media_url,
+                                                    //originalContentUrl: response.data[0].media_url,
+                                                    originalContentUrl: 'https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
                                                     previewImageUrl: response.data[0].media_url
                                                 }; 
 
@@ -172,18 +173,13 @@ export class LinebotsService {
         }
     }
 
-    linepush() {
-
-        const message = {
-            type: 'text',
-            text: LinebotsConst.LineBotMessage.PUSH_MESSAGE
-        }; 
+    lineBroadcast() { 
 
         //Firebaseに接続する    
         var admin = require('firebase-admin');
         let db = admin.firestore();
 
-        // LINE Pushメッセージ作成
+        // LINE BroadCastメッセージ作成
         const FB = require('fb');
         const line = require('@line/bot-sdk');
         const client = new line.Client({
@@ -204,15 +200,28 @@ export class LinebotsService {
                         {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url','user_id':process.env.INSTA_USER_ID},
                         function(response) {
                             if (response !== undefined) {
+                                //Helloメッセージ
+                                const message = {
+                                    type: 'text',
+                                    text: LinebotsConst.LineBotMessage.PUSH_MESSAGE
+                                };
                                 //該当ハッシュタグの画像URl取得
                                 const imageurl = {
                                     type: 'image',
                                     originalContentUrl: response.media_url,
                                     previewImageUrl: response.media_url
                                 }; 
+                                
+                                client.broadcast([message, imageurl], false)
+                                    .then(() => {
+                                            
+                                    })
+                                    .catch((err) => {
+                                            // error handling
+                                    });
 
                                 //FirebaseからUSER情報を取得
-                                let linebotsRef = db.collection('linebots');
+                                /* let linebotsRef = db.collection('linebots');
                                 let query = linebotsRef.where('enableFlg', '==', true);
                                 query.get()
                                 .then(snapshot => {
@@ -243,7 +252,7 @@ export class LinebotsService {
                                 })
                                 .catch(err => {
                                     console.log('### Error getting documents', err);
-                                });
+                                }); */
                             }
                         }
                     );

@@ -42,7 +42,7 @@ export class LinebotsController {
     @Post('/instagram')
         async linepush(@Res() res: Response) {
 
-            this.linebotsService.linepush();
+            this.linebotsService.lineBroadcast();
             a.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
             res.status(200);
             res.send(JSON.stringify(a));
