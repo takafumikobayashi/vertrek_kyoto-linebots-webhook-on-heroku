@@ -87,13 +87,6 @@ export class LinebotsService {
                                             template['columns']=columns
                                             image_carousel['template']=template
 
-                                            //該当ハッシュタグの画像URl取得
-                                            /* const imageurl = {
-                                                type: 'image',
-                                                originalContentUrl: response.data[0].media_url,
-                                                previewImageUrl: response.data[0].media_url
-                                            }; */
-
                                             const wikimessage = {
                                                 type: 'text',
                                                 text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
@@ -193,15 +186,8 @@ export class LinebotsService {
                         type: 'text',
                         text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
                     };
-
-                    //該当ハッシュタグの画像URl取得
-                    /* const imageurl = {
-                        type: 'image',
-                        originalContentUrl: response.media_url,
-                        previewImageUrl: response.media_url
-                    }; */
                                 
-                    client.broadcast([message, image_carousel], false)
+                    client.broadcast([image_carousel, message], false)
                         .then(() => {
                             console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
                         })
