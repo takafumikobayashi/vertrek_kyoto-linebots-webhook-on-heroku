@@ -118,8 +118,8 @@ export class LinebotsService {
                                         function(response) {
                                             
                                             if (response.data !== undefined) {
-                                                var image_carousel = {type: 'templete', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
-                                                var templete = {"type": "image_carousel"};
+                                                var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
+                                                var template = {"type": "image_carousel"};
                                                 var columns = [];
 
                                                 response.data.forEach(data => {
@@ -129,8 +129,8 @@ export class LinebotsService {
                                                     columns.push(columns_elements);
                                                 })
 
-                                                templete['columns']=columns
-                                                image_carousel['template']=templete
+                                                template['columns']=columns
+                                                image_carousel['template']=template
 
                                                 //該当ハッシュタグの画像URl取得
                                                 /* const imageurl = {
