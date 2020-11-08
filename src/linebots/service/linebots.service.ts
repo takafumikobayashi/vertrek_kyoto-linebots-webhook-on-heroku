@@ -131,7 +131,7 @@ export class LinebotsService {
                                                 
                                                 const instamessage = {
                                                     type: 'text',
-                                                    text: '他にもこんな写真があるので是非見て下さい！ https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                                    text: '他にもこんな写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
                                                 };
 
                                                 //Linebotsに返信

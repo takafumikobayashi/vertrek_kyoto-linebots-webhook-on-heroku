@@ -18,7 +18,7 @@ export namespace LinebotsConst {
     export namespace  LineBotMessage {
 
         export const NOT_FOUND_PICUTURE = '...すみません、該当の写真はありませんでした。'
-        export const BROADCAST_MESSAGE = 'こんにちは、本日の@vertrek_kyotoの最新投稿です！ ' + process.env.INSTA_MY_URL 
+        export const BROADCAST_MESSAGE = 'こんにちは、本日の@vertrek_kyotoの最新投稿です！\n' + process.env.INSTA_MY_URL 
         export const TODAYS_PHOTO = '今日の写真'
         export const HASHTAG_PREFIX = 'vertrek'
         export const SEND_SUCCESS_LOG_MESSAGE = 'Message send Successfully!'
