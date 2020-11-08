@@ -185,7 +185,7 @@ export class LinebotsService {
                                 var columns = [];
 
                                 //画像カルーセルで表示
-                                response.data.forEach(data => {
+                                response.forEach(data => {
                                     var columns_elements = {imageUrl: data.media_url}
                                     var action ={type: 'uri', label: 'Like:' + data.like_count, uri: data.media_url}
                                     columns_elements['action'] = action
