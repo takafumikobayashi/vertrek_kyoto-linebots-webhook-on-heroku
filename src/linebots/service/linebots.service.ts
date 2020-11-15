@@ -89,12 +89,12 @@ export class LinebotsService {
 
                                             const wikimessage = {
                                                 type: 'text',
-                                                text: 'https://ja.wikipedia.org/wiki/' + webhook.events[n].message.text
+                                                text: LinebotsConst.LineBotMessage.WIKIPEDIA_URL + webhook.events[n].message.text
                                             };
                                             
                                             const instamessage = {
                                                 type: 'text',
-                                                text: 'Instagramでは他にも写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                                text:  LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
                                             };
 
                                             //Linebotsに返信
@@ -112,7 +112,7 @@ export class LinebotsService {
 
                                 const instamessage = {
                                     type: 'text',
-                                    text: 'Instagramでは他にも写真があるので是非見て下さい！\n https://www.instagram.com/explore/tags/' + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                                    text: LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
                                 };
 
                                 client.replyMessage(webhook.events[n].replyToken, [message, instamessage])
@@ -166,7 +166,7 @@ export class LinebotsService {
             function(response) {
                 if (response.data !== undefined) {
 
-                    var image_carousel = {type: 'template', altText: '@vertrek_kyotoに新しい写真が投稿されました！'};
+                    var image_carousel = {type: 'template', altText: LinebotsConst.LineBotMessage.NEW_POST_MESSAGE};
                     var template = {"type": "image_carousel"};
                     var columns = [];
 
