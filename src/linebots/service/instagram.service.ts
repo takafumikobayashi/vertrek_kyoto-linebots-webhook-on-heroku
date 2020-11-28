@@ -1,6 +1,7 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { LinebotsConst } from '../const/common.const';
 import { LinebotsService } from './linebots.service';
+import { Fbapi } from '../interface/fbapi.interface';
 
 
 @Injectable()
@@ -11,10 +12,10 @@ export class InstagramService {
         private readonly FB = require('fb')
     ){};
 
-    async hashtagSearch(hashtag) {
-        
+    hashtagSearch(hashtag: string): string {
+ 
         // 受け取ったキーワードでhashtag Search
-        this.FB.api(
+        return this.FB.api(
             '/ig_hashtag_search',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
@@ -23,33 +24,44 @@ export class InstagramService {
                     return response.data[0].id
                 }
             }
-        )
+        )   
     }
 
-    async topMediaByHashtagId(hashtagId) {
+    topMediaByHashtagId(hashtagId: string): Fbapi[] {
 
         // ハッシュタグIDのTOP-Media取得
-        this.FB.api(
+        return this.FB.api(
             '/' + hashtagId + '/top_media',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.HASHTAG_SERCH_LIMIT,'user_id':process.env.INSTA_USER_ID},
             function(response) {
-                return response
+                var resjson  = []
+                response.data.forEach(data => {
+                    resjson['like_count'] = data.like_count
+                    resjson['media_url'] = data.media_url
+                    resjson['permalink'] = data.permalink
+                })
+                return resjson
             }
         )
     }
 
-    async topMediaByUserId() {
+    topMediaByUserId(): Fbapi[] {
 
         // ユーザーIDのTOP-Media取得
-        this.FB.api(
+        return this.FB.api(
             '/' + process.env.INSTA_USER_ID + '/media',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.USER_TOPMEDIA_LIMIT,'user_id':process.env.INSTA_USER_ID},
             function(response) {
-                return response
+                var resjson  = []
+                response.data.forEach(data => {
+                    resjson['like_count'] = data.like_count
+                    resjson['media_url'] = data.media_url
+                    resjson['permalink'] = data.permalink
+                })
+                return resjson
             }
         )
     }
-
 }
