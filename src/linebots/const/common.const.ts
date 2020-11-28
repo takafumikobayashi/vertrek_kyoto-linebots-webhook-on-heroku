@@ -11,7 +11,10 @@ export namespace LinebotsConst {
         export const FAILED_MESSAGE = 'Reply from vertrek-kyoto failed!';
         
         export const APP_NAME_WEBHOOK = 'webhook';
-        export const APP_NAME_LINEPUSH = 'nsgtagram';
+        export const APP_NAME_LINEPUSH = 'insgtagram';
+
+        export const API_RESPONSE_APP = 'linebots';
+        export const API_RESPONSE_CODE = 0;
     }
 
     /** LINEBots関連定数 */
@@ -25,5 +28,12 @@ export namespace LinebotsConst {
         export const SEND_SUCCESS_LOG_MESSAGE = 'Message send Successfully!'
         export const INSTAGRAM_HASHSEARCH_URL = 'https://www.instagram.com/explore/tags/'
         export const WIKIPEDIA_URL = 'https://ja.wikipedia.org/wiki/'
+    }
+
+    /** Instagram関連定数 */
+    export namespace  InstagramPrams {
+
+        export const HASHTAG_SERCH_LIMIT = '5'
+        export const USER_TOPMEDIA_LIMIT = '10'
     }
 }

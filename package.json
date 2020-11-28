@@ -25,6 +25,7 @@
     "@nestjs/common": "^7.5.1",
     "@nestjs/core": "^7.5.1",
     "@nestjs/platform-express": "^7.5.1",
+    "@types/fb": "0.0.28",
     "class-validator": "^0.12.2",
     "crypto": "^1.0.1",
     "fb": "^2.0.0",

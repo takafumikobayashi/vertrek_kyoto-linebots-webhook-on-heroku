@@ -5,21 +5,23 @@ import { LinebotsConst } from '../const/common.const';
 import { LinebotsService } from '../service/linebots.service';
 import { Request, Response } from 'express';
 
-// 共通レスポンス作成
-const a = new CommonresDto();
-a.app = 'linebots';
-a.code = 0;
 
 @Controller('linebots')
 export class LinebotsController {
-    constructor(private readonly linebotsService: LinebotsService) {}
+    private responseDto = new CommonresDto();
+    constructor(
+        private readonly linebotsService: LinebotsService
+        ) {
+            this.responseDto.app = LinebotsConst.ResMessage.API_RESPONSE_APP;
+            this.responseDto.code = LinebotsConst.ResMessage.API_RESPONSE_CODE;
+        }
 
     // About This API
     @Header('content-type', 'application/json')
     @Get()
         aboutapi(@Res() res: Response) {
-            a.message = LinebotsConst.ResMessage.APP_INFO;
-            res.send(JSON.stringify(a));
+            this.responseDto.message = LinebotsConst.ResMessage.APP_INFO;
+            res.send(JSON.stringify(this.responseDto));
         }        
 
     // Webhook Reply
@@ -29,13 +31,13 @@ export class LinebotsController {
 
             if (this.linebotsService.check(req) === true) {
                 this.linebotsService.reply(webhookDto);
-                a.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
+                this.responseDto.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
             } else {
                 console.log('Reply from vertrek-kyoto failed!(X-Line-Signature)')
-                a.message = LinebotsConst.ResMessage.FAILED_MESSAGE;
+                this.responseDto.message = LinebotsConst.ResMessage.FAILED_MESSAGE;
             };
             res.status(200);
-            res.send(JSON.stringify(a));
+            res.send(JSON.stringify(this.responseDto));
         }
     
     // LINE Push message from Webhooks
@@ -43,9 +45,9 @@ export class LinebotsController {
         async linepush(@Res() res: Response) {
 
             this.linebotsService.lineBroadcast();
-            a.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
+            this.responseDto.message = LinebotsConst.ResMessage.SUCCESS_MESSAGE;
             res.status(200);
-            res.send(JSON.stringify(a));
+            res.send(JSON.stringify(this.responseDto));
         }
 
 }
