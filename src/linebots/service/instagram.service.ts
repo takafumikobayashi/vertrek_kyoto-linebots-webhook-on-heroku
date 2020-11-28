@@ -9,6 +9,7 @@ export class InstagramService {
     
     hashtagSearch(hashtag: string): string {
  
+        console.log('######### hashtag search start2 ')
         // 受け取ったキーワードでhashtag Search
         return FB.api(
             '/ig_hashtag_search',

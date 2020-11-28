@@ -60,6 +60,8 @@ export class LinebotsService {
             //message-typeならreply送信
             if (webhook.events[n].type === 'message'){
 
+                console.log('######### hashtag search start ')
+
                 // ハッシュタグサーチ開始
                 const hashtagSearch = async(): Promise<string> => {
                     let a: string  = this.instagramService.hashtagSearch(webhook.events[n].message.text)
