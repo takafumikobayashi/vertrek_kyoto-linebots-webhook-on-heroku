@@ -1,22 +1,17 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LinebotsConst } from '../const/common.const';
-import { LinebotsService } from './linebots.service';
 import { Fbapi } from '../interface/fbapi.interface';
+let FB = require('fb')
 
 
 @Injectable()
 export class InstagramService {
     
-    constructor(
-        @Inject(forwardRef(() => LinebotsService))
-        private readonly FB = require('fb')
-    ){};
-
     hashtagSearch(hashtag: string): string {
  
         let hashtagId: string = null
         // 受け取ったキーワードでhashtag Search
-        this.FB.api(
+        FB.api(
             '/ig_hashtag_search',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
@@ -34,7 +29,7 @@ export class InstagramService {
 
         var resjson  = []
         // ハッシュタグIDのTOP-Media取得
-        this.FB.api(
+        FB.api(
             '/' + hashtagId + '/top_media',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.HASHTAG_SERCH_LIMIT,'user_id':process.env.INSTA_USER_ID},
@@ -53,7 +48,7 @@ export class InstagramService {
     topMediaByUserId(): Fbapi[] {
 
         // ユーザーIDのTOP-Media取得
-        return this.FB.api(
+        return FB.api(
             '/' + process.env.INSTA_USER_ID + '/media',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.USER_TOPMEDIA_LIMIT,'user_id':process.env.INSTA_USER_ID},
