@@ -62,7 +62,7 @@ export class LinebotsService {
 
                 // ハッシュタグサーチ開始
                 const hashtagId = this.instagramService.hashtagSearch(webhook.events[n].message.text)
-                console.log('####### hashtagId =' + hashtagId)
+                console.log('#### 2 ### hashtagId =' + hashtagId)
                 var response :Fbapi[] = []
                 response = this.instagramService.topMediaByHashtagId(hashtagId)
 
