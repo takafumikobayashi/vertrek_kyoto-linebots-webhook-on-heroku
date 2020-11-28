@@ -68,16 +68,15 @@ export class LinebotsService {
                     return a
                 }
 
-                const topMediaByHashtagId = async(): Promise<Fbapi[]> => {
+                const topMediaByHashtagId = (async(): Promise<Fbapi[]> => {
                     let a: string = await hashtagSearch()
                     console.log('######### a = ' + a)
                     let response: Fbapi[] = this.instagramService.topMediaByHashtagId(a)
                     return response
-                };
+                })();
 
-                const lineReply = async(): Promise<boolean> => {
-                    let response: Fbapi[] = await topMediaByHashtagId()
-                    console.log('######### response = ' + response)
+                topMediaByHashtagId.then(response => {
+                    console.log('######### line reply start ')
                     if (response !== undefined) {
                         var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
                         var template = {"type": "image_carousel"};
@@ -113,8 +112,7 @@ export class LinebotsService {
                             console.log(err);
                         });
                     }
-                    return true
-                }
+                })
         
                 /*
                 //FB.api - ハッシュタグサーチ
