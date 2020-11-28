@@ -16,8 +16,8 @@ export class InstagramService {
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
             function(response) {
+                console.log('#### 1 ### hashtagId =' + response)
                 if (response.data !== undefined) {
-                    console.log('#### 1 ### hashtagId =' + response.data[0].id)
                     return response.data[0].id
                 } else {
                     return null
