@@ -66,15 +66,16 @@ export class LinebotsService {
                     return a
                 }
 
-                var response :Fbapi[] = []
                 const topMediaByHashtagId = async(): Promise<Fbapi[]> => {
                     let a: string = await hashtagSearch()
-                    response = this.instagramService.topMediaByHashtagId(a)
+                    console.log('######### a = ' + a)
+                    let response: Fbapi[] = this.instagramService.topMediaByHashtagId(a)
                     return response
                 };
 
                 const lineReply = async(): Promise<boolean> => {
                     let response: Fbapi[] = await topMediaByHashtagId()
+                    console.log('######### response = ' + response)
                     if (response !== undefined) {
                         var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
                         var template = {"type": "image_carousel"};
