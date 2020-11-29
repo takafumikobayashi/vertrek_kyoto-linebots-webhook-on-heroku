@@ -63,56 +63,46 @@ export class LinebotsService {
                 console.log('######### hashtag search start ')
 
                 // ハッシュタグサーチ開始
-                const hashtagSearch = async(): Promise<string> => {
-                    let a: Promise<string>  = this.instagramService.hashtagSearch(webhook.events[n].message.text)
-                    return a
+                const hashtagId: string = this.instagramService.hashtagSearch(webhook.events[n].message.text)
+                console.log('######### hashtagId = ' + hashtagId)
+                const response = this.instagramService.topMediaByHashtagId(hashtagId)
+                console.log('######### response = ' + response)
+
+                if (response !== undefined) {
+                    var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
+                    var template = {"type": "image_carousel"};
+                    var columns = [];
+
+                    //画像カルーセルで表示
+                    response.forEach(data => {
+                        var columns_elements = {imageUrl: data.media_url}
+                        var action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
+                        columns_elements['action'] = action
+                        columns.push(columns_elements);
+                    })
+
+                    template['columns']=columns
+                    image_carousel['template']=template
+
+                    const wikimessage = {
+                        type: 'text',
+                        text: LinebotsConst.LineBotMessage.WIKIPEDIA_URL + webhook.events[n].message.text
+                    };
+                    
+                    const instamessage = {
+                        type: 'text',
+                        text:  LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                    };
+
+                    //Linebotsに返信
+                    client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
+                    .then(() => {
+                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
                 }
-
-                const topMediaByHashtagId = (async(): Promise<Fbapi[]> => {
-                    let a: string = await hashtagSearch()
-                    console.log('######### a = ' + a)
-                    let response: Fbapi[] = this.instagramService.topMediaByHashtagId(a)
-                    return response
-                })();
-
-                topMediaByHashtagId.then(response => {
-                    console.log('######### line reply start ')
-                    if (response !== undefined) {
-                        var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
-                        var template = {"type": "image_carousel"};
-                        var columns = [];
-    
-                        //画像カルーセルで表示
-                        response.forEach(data => {
-                            var columns_elements = {imageUrl: data.media_url}
-                            var action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
-                            columns_elements['action'] = action
-                            columns.push(columns_elements);
-                        })
-    
-                        template['columns']=columns
-                        image_carousel['template']=template
-    
-                        const wikimessage = {
-                            type: 'text',
-                            text: LinebotsConst.LineBotMessage.WIKIPEDIA_URL + webhook.events[n].message.text
-                        };
-                        
-                        const instamessage = {
-                            type: 'text',
-                            text:  LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
-                        };
-    
-                        //Linebotsに返信
-                        client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
-                        .then(() => {
-                            console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                    }
-                })
         
                 /*
                 //FB.api - ハッシュタグサーチ
