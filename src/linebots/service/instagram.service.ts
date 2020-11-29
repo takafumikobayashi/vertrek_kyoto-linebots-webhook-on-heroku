@@ -7,11 +7,10 @@ let FB = require('fb')
 @Injectable()
 export class InstagramService {
     
-    hashtagSearch(hashtag: string): string {
+    async hashtagSearch(hashtag: string): Promise<string> {
  
-        console.log('######### hashtag search start2 ')
         // 受け取ったキーワードでhashtag Search
-        return FB.api(
+        const hashtagId = await FB.api(
             '/ig_hashtag_search',
             'GET',
             {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
@@ -24,6 +23,7 @@ export class InstagramService {
                 }
             }
         )
+        return hashtagId
     }
 
     topMediaByHashtagId(hashtagId: string): Fbapi[] {

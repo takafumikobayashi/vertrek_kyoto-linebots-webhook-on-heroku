@@ -64,7 +64,7 @@ export class LinebotsService {
 
                 // ハッシュタグサーチ開始
                 const hashtagSearch = async(): Promise<string> => {
-                    let a: string  = this.instagramService.hashtagSearch(webhook.events[n].message.text)
+                    let a: Promise<string>  = this.instagramService.hashtagSearch(webhook.events[n].message.text)
                     return a
                 }
 
