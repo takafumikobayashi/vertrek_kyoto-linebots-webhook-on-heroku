@@ -63,7 +63,7 @@ export class LinebotsService {
                 console.log('######### hashtag search start ')
 
                 // ハッシュタグサーチ開始
-                const hashtagId: string = this.instagramService.hashtagSearch(webhook.events[n].message.text)
+                const hashtagId: Promise<string> = this.instagramService.hashtagSearch(webhook.events[n].message.text)
                 console.log('######### hashtagId = ' + hashtagId)
                 const response = this.instagramService.topMediaByHashtagId(hashtagId)
                 console.log('######### response = ' + response)

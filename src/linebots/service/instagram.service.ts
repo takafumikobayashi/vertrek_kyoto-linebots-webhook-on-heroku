@@ -1,32 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { LinebotsConst } from '../const/common.const';
 import { Fbapi } from '../interface/fbapi.interface';
+import { ReplaySubject } from 'rxjs';
 let FB = require('fb')
 
 
 @Injectable()
 export class InstagramService {
     
-    hashtagSearch(hashtag: string): string {
+    hashtagSearch(hashtag: string): Promise<string> {
  
         // 受け取ったキーワードでhashtag Search
-        const hashtagId = FB.api(
-            '/ig_hashtag_search',
-            'GET',
-            {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
-            function(response) {
-                console.log('#### 1 ### hashtagId =' + response)
-                if (response.data !== undefined) {
-                    return response.data[0].id
-                } else {
-                    return null
+        return new Promise(async (resolve, reject) => {
+            
+            FB.api(
+                '/ig_hashtag_search',
+                'GET',
+                {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
+                function (response) {
+                    console.log('#### 1 ### hashtagId =' + response)
+                    if (response.data !== undefined) {
+                        resolve(response.data[0].id)
+                    } else {
+                        reject()
+                    }
                 }
-            }
-        )
-        return hashtagId
+            )
+            
+        });
     }
 
-    topMediaByHashtagId(hashtagId: string): Fbapi[] {
+    topMediaByHashtagId(hashtagId: Promise<string>): Fbapi[] {
 
         // ハッシュタグIDのTOP-Media取得
         return FB.api(
