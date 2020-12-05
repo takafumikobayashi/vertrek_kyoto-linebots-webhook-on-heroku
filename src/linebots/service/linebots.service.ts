@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, response } from 'express';
 import { Injectable } from '@nestjs/common';
 import { Webhook } from '../interface/webhook.interface';
 import { Fbapi } from '../interface/fbapi.interface';
@@ -64,8 +64,12 @@ export class LinebotsService {
 
                 // ハッシュタグサーチ開始
                 const hashtagId: Promise<string> = this.instagramService.hashtagSearch(webhook.events[n].message.text)
-                console.log('######### hashtagId = ' + hashtagId)
-                const response = this.instagramService.topMediaByHashtagId(hashtagId)
+                hashtagId.then(a => {
+                    console.log('######### hashtagId = ' + a)
+                    const response = this.instagramService.topMediaByHashtagId(a)
+                })
+                
+                let response: Fbapi[] = []
                 console.log('######### response = ' + response)
 
                 if (response !== undefined) {
