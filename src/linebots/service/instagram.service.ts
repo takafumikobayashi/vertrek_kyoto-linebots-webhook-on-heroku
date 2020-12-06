@@ -42,7 +42,8 @@ export class InstagramService {
                         resobj['like_count'] = data.like_count
                         resobj['media_url'] = data.media_url
                         resobj['permalink'] = data.permalink
-                        resjson.push
+                        console.log('##### resobj =' + resobj)
+                        resjson.push(resobj)
                     })
                     resolve(resjson)
                 }
@@ -65,7 +66,7 @@ export class InstagramService {
                         resobj['like_count'] = data.like_count
                         resobj['media_url'] = data.media_url
                         resobj['permalink'] = data.permalink
-                        resjson.push
+                        resjson.push(resobj)
                     })
                     resolve(resjson)
                 }
