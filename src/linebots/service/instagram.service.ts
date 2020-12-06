@@ -37,14 +37,7 @@ export class InstagramService {
                 {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.HASHTAG_SERCH_LIMIT,'user_id':process.env.INSTA_USER_ID},
                 function(response) {
                     console.log('######### function_response = ' + response)
-                    var resjson  = []
-                    response.data.forEach(data => {
-                        resjson['like_count'] = data.like_count
-                        resjson['media_url'] = data.media_url
-                        resjson['permalink'] = data.permalink
-                    })
-                    console.log('######### resjson = ' + resjson)
-                    resolve(resjson)
+                    resolve(response)
                 }
             )
         })        
