@@ -66,6 +66,8 @@ export class LinebotsService {
 
                     const topMediaByHashtagId: Promise<Fbapi[]> =  this.instagramService.topMediaByHashtagId(hashtagId)
                     topMediaByHashtagId.then(response => {
+                        
+                        console.log('######### response = ' + response)
                         if (response !== undefined) {
                             var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
                             var template = {"type": "image_carousel"};
@@ -104,7 +106,7 @@ export class LinebotsService {
                     })
 
                 }).catch(err => {
-                    console.log('######### hashtagId = reject')
+                    console.log(err)
                 })
         
                 /*
