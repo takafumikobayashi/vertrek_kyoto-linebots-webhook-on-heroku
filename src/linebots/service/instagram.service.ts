@@ -28,6 +28,7 @@ export class InstagramService {
 
     topMediaByHashtagId(hashtagId: string): Promise<Fbapi[]> {
 
+        console.log('######### hashtagId = ' + hashtagId)
         // ハッシュタグIDのTOP-Media取得
         return new Promise ((resolve) => {
             FB.api(
@@ -41,6 +42,7 @@ export class InstagramService {
                         resjson['media_url'] = data.media_url
                         resjson['permalink'] = data.permalink
                     })
+                    console.log('######### resjson = ' + resjson)
                     resolve(resjson)
                 }
             )
