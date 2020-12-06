@@ -38,7 +38,6 @@ export class LinebotsService {
     async reply(webhook: Webhook) {
 
         // Replyメッセージ作成
-        //const FB = require('fb');
         const line = require('@line/bot-sdk');
         const client = new line.Client({
         channelAccessToken: process.env.ACCESS_TOKEN
@@ -67,7 +66,6 @@ export class LinebotsService {
                     const topMediaByHashtagId: Promise<Fbapi[]> =  this.instagramService.topMediaByHashtagId(hashtagId)
                     topMediaByHashtagId.then(response => {
 
-                        console.log('######### response = ' + response)
                         if (response !== undefined) {
                             var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
                             var template = {"type": "image_carousel"};
@@ -105,79 +103,23 @@ export class LinebotsService {
                         }
                     })
 
-                }).catch(err => {
-                    console.log(err)
+                }).catch(notFoundMessage => {
+                    
+                    console.log(notFoundMessage)
+                    const instamessage = {
+                        type: 'text',
+                        text: LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
+                    };
+
+                    client.replyMessage(webhook.events[n].replyToken, [message, instamessage])
+                    .then(() => {
+                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not Found KEYWORD]');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
                 })
-        
-                /*
-                //FB.api - ハッシュタグサーチ
-                FB.api(
-                    '/ig_hashtag_search',
-                    'GET',
-                    {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + webhook.events[n].message.text}, // + webhook.events[n].message.text},
-                    function(response) {
-                        if (response.data !== undefined) {
-                            //FB.api - 投稿情報取得
-                            FB.api(
-                                '/' + response.data[0].id + '/top_media',
-                                'GET',
-                                {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':'5','user_id':process.env.INSTA_USER_ID},
-                                function(response) {
-                                    
-                                    if (response.data !== undefined) {
-                                        var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
-                                        var template = {"type": "image_carousel"};
-                                        var columns = [];
-
-                                        //画像カルーセルで表示
-                                        response.data.forEach(data => {
-                                            var columns_elements = {imageUrl: data.media_url}
-                                            var action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
-                                            columns_elements['action'] = action
-                                            columns.push(columns_elements);
-                                        })
-
-                                        template['columns']=columns
-                                        image_carousel['template']=template
-
-                                        const wikimessage = {
-                                            type: 'text',
-                                            text: LinebotsConst.LineBotMessage.WIKIPEDIA_URL + webhook.events[n].message.text
-                                        };
-                                        
-                                        const instamessage = {
-                                            type: 'text',
-                                            text:  LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
-                                        };
-
-                                        //Linebotsに返信
-                                        client.replyMessage(webhook.events[n].replyToken, [image_carousel, wikimessage, instamessage])
-                                        .then(() => {
-                                            console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: HashTag Search]');
-                                        })
-                                        .catch((err) => {
-                                            console.log(err);
-                                        });
-                                    }
-                                }
-                            );
-                        } else {
-
-                            const instamessage = {
-                                type: 'text',
-                                text: LinebotsConst.LineBotMessage.INSTAGRAM_INFOMATION_MESSAGE + '\n' + LinebotsConst.LineBotMessage.INSTAGRAM_HASHSEARCH_URL + LinebotsConst.LineBotMessage.HASHTAG_PREFIX + webhook.events[n].message.text + '/',
-                            };
-
-                            client.replyMessage(webhook.events[n].replyToken, [message, instamessage])
-                            .then(() => {
-                                console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: reply, result: Not Found KEYWORD]');
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                            });
-                        }
-                    }
-                ); */
             } 
 
             //console.log出力（デバッグ解析用）
@@ -199,55 +141,46 @@ export class LinebotsService {
 
     lineBroadcast() { 
 
-        //Firebaseに接続する    
-        var admin = require('firebase-admin');
-        let db = admin.firestore();
-
         // LINE BroadCastメッセージ作成
-        const FB = require('fb');
         const line = require('@line/bot-sdk');
         const client = new line.Client({
         channelAccessToken: process.env.ACCESS_TOKEN
         }); 
 
         //FB.api - 最新の投稿を表示
-        FB.api(
-            '/' + process.env.INSTA_USER_ID + '/media',
-            'GET',
-            {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':'10','user_id':process.env.INSTA_USER_ID},
-            function(response) {
-                if (response.data !== undefined) {
+        const topMediaByUserId: Promise<Fbapi[]> =  this.instagramService.topMediaByUserId()
+        topMediaByUserId.then(response => {
+            if (response !== undefined) {
 
-                    var image_carousel = {type: 'template', altText: LinebotsConst.LineBotMessage.NEW_POST_MESSAGE};
-                    var template = {"type": "image_carousel"};
-                    var columns = [];
+                var image_carousel = {type: 'template', altText: LinebotsConst.LineBotMessage.NEW_POST_MESSAGE};
+                var template = {"type": "image_carousel"};
+                var columns = [];
 
-                    //画像カルーセルで表示
-                    response.data.forEach(data => {
-                        var columns_elements = {imageUrl: data.media_url}
-                        var action ={type: 'uri', label: data.like_count + 'Likes!', uri: data.permalink}
-                        columns_elements['action'] = action
-                        columns.push(columns_elements);
+                //画像カルーセルで表示
+                response.forEach(data => {
+                    var columns_elements = {imageUrl: data.media_url}
+                    var action ={type: 'uri', label: data.like_count + 'Likes!', uri: data.permalink}
+                    columns_elements['action'] = action
+                    columns.push(columns_elements);
+                })
+
+                template['columns']=columns
+                image_carousel['template']=template
+
+                //Helloメッセージ
+                const message = {
+                    type: 'text',
+                    text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
+                };
+                            
+                client.broadcast([image_carousel, message], false)
+                    .then(() => {
+                        console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
                     })
-
-                    template['columns']=columns
-                    image_carousel['template']=template
-
-                    //Helloメッセージ
-                    const message = {
-                        type: 'text',
-                        text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
-                    };
-                                
-                    client.broadcast([image_carousel, message], false)
-                        .then(() => {
-                            console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                } 
+                    .catch((err) => {
+                        console.log(err);
+                    });
             }
-        );
+        })        
     }
 }

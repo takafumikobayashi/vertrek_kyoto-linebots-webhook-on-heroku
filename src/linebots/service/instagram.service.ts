@@ -19,7 +19,7 @@ export class InstagramService {
                     if (response.data !== undefined) {
                         resolve(response.data[0].id)
                     } else {
-                        reject()
+                        reject(LinebotsConst.InstagramPrams.NOT_FOUND_HASHTAGID)
                     }
                 }
             )
@@ -28,7 +28,6 @@ export class InstagramService {
 
     topMediaByHashtagId(hashtagId: string): Promise<Fbapi[]> {
 
-        console.log('######### hashtagId = ' + hashtagId)
         // ハッシュタグIDのTOP-Media取得
         return new Promise ((resolve) => {
             FB.api(
@@ -42,7 +41,6 @@ export class InstagramService {
                         resobj['like_count'] = data.like_count
                         resobj['media_url'] = data.media_url
                         resobj['permalink'] = data.permalink
-                        console.log('##### resobj =' + resobj)
                         resjson.push(resobj)
                     })
                     resolve(resjson)

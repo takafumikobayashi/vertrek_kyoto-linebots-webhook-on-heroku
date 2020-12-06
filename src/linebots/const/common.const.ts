@@ -35,5 +35,6 @@ export namespace LinebotsConst {
 
         export const HASHTAG_SERCH_LIMIT = '5'
         export const USER_TOPMEDIA_LIMIT = '10'
+        export const NOT_FOUND_HASHTAGID = 'hashtagId not found from instagram Graph API'
     }
 }
