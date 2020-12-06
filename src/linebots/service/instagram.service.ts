@@ -11,20 +11,22 @@ export class InstagramService {
     
     async hashtagSearch(hashtag: string): Promise<string> {
         
-        // 受け取ったキーワードでhashtag Search
-        return await FB.api(
-            '/ig_hashtag_search',
-            'GET',
-            {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
-            function (response) {
-                console.log('#### 1 ### hashtagId =' + response)
-                if (response.data !== undefined) {
-                    return response.data[0].id
-                } else {
-                    return null
+        return new Promise ((resolve, reject) => {
+            // 受け取ったキーワードでhashtag Search
+            FB.api(
+                '/ig_hashtag_search',
+                'GET',
+                {'access_token':process.env.INSTA_ACCESS_TOKEN,'user_id':process.env.INSTA_USER_ID,'q':'vertrek' + hashtag},
+                function (response) {
+                    console.log('#### 1 ### hashtagId =' + response)
+                    if (response.data !== undefined) {
+                        resolve(response.data[0].id)
+                    } else {
+                        reject()
+                    }
                 }
-            }
-        )
+            )
+        })
     }
 
     topMediaByHashtagId(hashtagId: string): Fbapi[] {
