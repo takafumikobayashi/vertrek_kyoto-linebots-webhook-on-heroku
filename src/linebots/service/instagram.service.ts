@@ -36,8 +36,15 @@ export class InstagramService {
                 'GET',
                 {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.HASHTAG_SERCH_LIMIT,'user_id':process.env.INSTA_USER_ID},
                 function(response) {
-                    console.log('######### function_response = ' + response)
-                    resolve(response)
+                    var resjson  = new Array
+                    response.data.forEach(data => {
+                        var resobj = {}
+                        resobj['like_count'] = data.like_count
+                        resobj['media_url'] = data.media_url
+                        resobj['permalink'] = data.permalink
+                        resjson.push
+                    })
+                    resolve(resjson)
                 }
             )
         })        
@@ -52,11 +59,13 @@ export class InstagramService {
                 'GET',
                 {'access_token':process.env.INSTA_ACCESS_TOKEN,'fields':'like_count,media_url,permalink','limit':LinebotsConst.InstagramPrams.USER_TOPMEDIA_LIMIT,'user_id':process.env.INSTA_USER_ID},
                 function(response) {
-                    var resjson  = []
+                    var resjson  = new Array
                     response.data.forEach(data => {
-                        resjson['like_count'] = data.like_count
-                        resjson['media_url'] = data.media_url
-                        resjson['permalink'] = data.permalink
+                        var resobj = {}
+                        resobj['like_count'] = data.like_count
+                        resobj['media_url'] = data.media_url
+                        resobj['permalink'] = data.permalink
+                        resjson.push
                     })
                     resolve(resjson)
                 }
