@@ -67,14 +67,14 @@ export class LinebotsService {
                     topMediaByHashtagId.then(response => {
 
                         if (response !== undefined) {
-                            var image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
-                            var template = {"type": "image_carousel"};
-                            var columns = [];
+                            let image_carousel = {type: 'template', altText: webhook.events[n].message.text + 'の写真をお送りします！'};
+                            let template = {"type": "image_carousel"};
+                            let columns = [];
         
                             //画像カルーセルで表示
                             response.forEach(data => {
-                                var columns_elements = {imageUrl: data.media_url}
-                                var action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
+                                let columns_elements = {imageUrl: data.media_url}
+                                let action ={type: 'uri', label: data.like_count + 'Likes!' , uri: data.permalink}
                                 columns_elements['action'] = action
                                 columns.push(columns_elements);
                             })
@@ -104,7 +104,7 @@ export class LinebotsService {
                     })
 
                 }).catch(notFoundMessage => {
-                    
+
                     console.log(notFoundMessage)
                     const instamessage = {
                         type: 'text',
@@ -152,14 +152,14 @@ export class LinebotsService {
         topMediaByUserId.then(response => {
             if (response !== undefined) {
 
-                var image_carousel = {type: 'template', altText: LinebotsConst.LineBotMessage.NEW_POST_MESSAGE};
-                var template = {"type": "image_carousel"};
-                var columns = [];
+                let image_carousel = {type: 'template', altText: LinebotsConst.LineBotMessage.NEW_POST_MESSAGE};
+                let template = {"type": "image_carousel"};
+                let columns = [];
 
                 //画像カルーセルで表示
                 response.forEach(data => {
-                    var columns_elements = {imageUrl: data.media_url}
-                    var action ={type: 'uri', label: data.like_count + 'Likes!', uri: data.permalink}
+                    let columns_elements = {imageUrl: data.media_url}
+                    let action ={type: 'uri', label: data.like_count + 'Likes!', uri: data.permalink}
                     columns_elements['action'] = action
                     columns.push(columns_elements);
                 })
