@@ -197,7 +197,18 @@ export class LinebotsService {
             access_token_key    : process.env.TWITTER_ACCESS_TOKEN,
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
-        (async () => {
+
+        client.post('statuses/update', {status: text}, function(error, tweet, response) {
+            if (!error) {
+                console.log(LinebotsConst.TwitterParams.TWEET_SUCCESS);
+                console.log(tweet);
+            } else {
+                console.log(error);
+                console.log(response);
+            }
+        });
+
+        /* (async () => {
             //画像のアップロード
             const media = await client.post('media/upload', {media: media_url})
             console.log(media);
@@ -209,6 +220,6 @@ export class LinebotsService {
             }
             const response = await client.post('statuses/update', status)
                 console.log(response);
-        })();
+        })(); */
     }    
 }
