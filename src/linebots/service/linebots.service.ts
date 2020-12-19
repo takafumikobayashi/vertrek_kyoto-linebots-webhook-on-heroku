@@ -198,19 +198,33 @@ export class LinebotsService {
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
 
-        const data = require('fs').readFileSync(media_url); //投稿する画像
-        (async () => {
-            //画像のアップロード
-            const media = await client.post('media/upload', {media: data})
-            console.log(media);
-            
-           //Twitterに投稿
-            const status = {
-            status: text,
-               media_ids: media.media_id_string // Pass the media id string
-            }
-            const response = await client.post('statuses/update', status)
-                console.log(response);
-        })();
+        async function getMedia() {
+            let request = require('request')
+            const fs = require('fs')
+            request(
+                {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
+                    if(!error && response.statusCode === 200){
+                        let data = fs.readFileSync(body);
+                        return data
+                    }
+                }
+            )
+        }
+
+        getMedia().then(data => {
+            (async () => {
+                //画像のアップロード
+                const media = await client.post('media/upload', {media: data})
+                console.log(media);
+                
+               //Twitterに投稿
+                const status = {
+                status: text,
+                   media_ids: media.media_id_string // Pass the media id string
+                }
+                const response = await client.post('statuses/update', status)
+                    console.log(response);
+            })();
+        });
     }    
 }
