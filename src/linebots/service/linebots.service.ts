@@ -6,6 +6,7 @@ import { FirebaseService } from './firebase.service';
 import { InstagramService } from './instagram.service';
 import { LinebotsConst } from '../const/common.const';
 import bodyParser = require('body-parser');  //  bodyParser
+let Twitter = require('twitter');
 
 
 @Injectable()
@@ -156,6 +157,9 @@ export class LinebotsService {
                 let template = {"type": "image_carousel"};
                 let columns = [];
 
+                //Twitterに投稿
+                this.TwitterPost(response[0].media_url, response[0].permalink)
+
                 //画像カルーセルで表示
                 response.forEach(data => {
                     let columns_elements = {imageUrl: data.media_url}
@@ -172,7 +176,7 @@ export class LinebotsService {
                     type: 'text',
                     text: LinebotsConst.LineBotMessage.BROADCAST_MESSAGE
                 };
-                            
+                
                 client.broadcast([image_carousel, message], false)
                     .then(() => {
                         console.log(LinebotsConst.LineBotMessage.SEND_SUCCESS_LOG_MESSAGE + '[ type: broadcast, result: Post notice]');
@@ -183,4 +187,28 @@ export class LinebotsService {
             }
         })        
     }
+
+    TwitterPost(media_url: string, url: string) {
+
+        const text = LinebotsConst.TwitterParams.TWEET_TEXT + '\n' + url + '\n\n' + process.env.TWITTER_HASHTAG
+        const client = new Twitter({
+            consumer_key        : process.env.TWITTER_CONSUMER_KEY,
+            consumer_secret     : process.env.TWITTER_CONSUMER_KEY_SECRET,
+            access_token_key    : process.env.TWITTER_ACCESS_TOKEN,
+            access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
+        });
+        (async () => {
+            //画像のアップロード
+            const media = await client.post('media/upload', {media: media_url})
+            console.log(media);
+            
+           //Twitterに投稿
+            const status = {
+            status: text,
+               media_ids: media.media_id_string // Pass the media id string
+            }
+            const response = await client.post('statuses/update', status)
+                console.log(response);
+        })();
+    }    
 }
