@@ -198,19 +198,10 @@ export class LinebotsService {
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
 
-        /* client.post('statuses/update', {status: text}, function(error, tweet, response) {
-            if (!error) {
-                console.log(LinebotsConst.TwitterParams.TWEET_SUCCESS);
-                console.log(tweet);
-            } else {
-                console.log(error);
-                console.log(response);
-            }
-        }); */
-
+        const data = require('fs').readFileSync(media_url); //投稿する画像
         (async () => {
             //画像のアップロード
-            const media = await client.post('media/upload', {media: media_url})
+            const media = await client.post('media/upload', {media: data})
             console.log(media);
             
            //Twitterに投稿
