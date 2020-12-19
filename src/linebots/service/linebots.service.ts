@@ -200,12 +200,10 @@ export class LinebotsService {
 
         async function getMedia() {
             let request = require('request')
-            const fs = require('fs')
             request(
                 {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
                     if(!error && response.statusCode === 200){
-                        let data = fs.readFileSync(body);
-                        return data
+                        return body
                     }
                 }
             )
