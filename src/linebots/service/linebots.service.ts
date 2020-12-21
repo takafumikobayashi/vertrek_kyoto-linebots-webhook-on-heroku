@@ -198,18 +198,20 @@ export class LinebotsService {
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
 
-        async function getMedia() {
+        async function getMedia(){
             let request = require('request')
             request(
                 {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
                     if(!error && response.statusCode === 200){
-                        return body
+                        var data = new Uint8Array(body)
+                        return data
                     }
                 }
             )
         }
 
-        getMedia().then(data => {
+        getMedia()
+        .then(data => {
             (async () => {
                 //画像のアップロード
                 const media = await client.post('media/upload', {media: data})
@@ -223,6 +225,9 @@ export class LinebotsService {
                 const response = await client.post('statuses/update', status)
                     console.log(response);
             })();
+        })
+        .catch(err => {
+            console.log(err);
         });
     }    
 }
