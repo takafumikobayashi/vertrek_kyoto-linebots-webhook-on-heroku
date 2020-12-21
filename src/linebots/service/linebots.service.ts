@@ -198,18 +198,17 @@ export class LinebotsService {
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
 
-        async function getMedia():Promise<Uint8Array> {
-            return new Promise ((resolve) => {
-                let request = require('request')
-                request(
-                    {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
-                        if(!error && response.statusCode === 200){
-                            var data = new Uint8Array(body)
-                            resolve(data)
-                        }
+        async function getMedia() {
+            let request = require('request')
+            request(
+                {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
+                    if(!error && response.statusCode === 200){
+                        var data = new Uint8Array(require('fs').readFileSync(body))
+                        console.log(data)
+                        return data
                     }
-                )
-            })
+                }
+            )
         }
 
         getMedia()
