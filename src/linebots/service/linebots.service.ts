@@ -203,7 +203,7 @@ export class LinebotsService {
             request(
                 {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
                     if(!error && response.statusCode === 200){
-                        var data = new Uint8Array(require('fs').readFileSync(body))
+                        let data = require('fs').writeFileSync('/tmp/twitterPost.jpg', body, 'binary');
                         console.log(data)
                         return data
                     }
