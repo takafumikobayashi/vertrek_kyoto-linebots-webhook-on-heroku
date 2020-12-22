@@ -6,6 +6,7 @@ import { FirebaseService } from './firebase.service';
 import { InstagramService } from './instagram.service';
 import { LinebotsConst } from '../const/common.const';
 import bodyParser = require('body-parser');  //  bodyParser
+import * as fs from 'fs'
 let Twitter = require('twitter');
 
 
@@ -203,9 +204,8 @@ export class LinebotsService {
             {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
                 if(!error && response.statusCode === 200){
                     try{
-                        let fs = require('fs')
                         fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary')
-                        let data = fs.readFileSync('/tmp/twitterPost.jpg')
+                        let data = fs.readFileSync('/tmp/twitterPost.jpg');
                         (async () => {
                             //画像のアップロード
                             const media = await client.post('media/upload', {media: data});
