@@ -207,7 +207,6 @@ export class LinebotsService {
                             let fs = require('fs')
                             fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary');
                             let data = fs.readFileSync('/tmp/twitterPost.jpg')
-                            console.log("data = " + data)
                             return data
                         } catch(e) {
                             throw e
