@@ -202,23 +202,26 @@ export class LinebotsService {
         request(
             {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
                 if(!error && response.statusCode === 200){
-                    let fs = require('fs')
-                    fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary');
-                    let data = fs.readFileSync('/tmp/twitterPost.jpg')
-                    
-                    (async () => {
-                        //画像のアップロード
-                        const media = await client.post('media/upload', {media: data})
-                        console.log(media);
-                        
-                        //Twitterに投稿
-                        const status = {
-                        status: text,
-                        media_ids: media.media_id_string // Pass the media id string
-                        }
-                        const response = await client.post('statuses/update', status)
-                        console.log(response);
-                    })();
+                    try{
+                        let fs = require('fs')
+                        fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary')
+                        let data = fs.readFileSync('/tmp/twitterPost.jpg')
+                        (async () => {
+                            //画像のアップロード
+                            const media = await client.post('media/upload', {media: data});
+                            console.log(media);
+                            
+                           //Twitterに投稿
+                            const status = {
+                                status: text,
+                                media_ids: media.media_id_string // Pass the media id string
+                            }
+                            const response = await client.post('statuses/update', status);
+                            console.log(response);
+                        })();
+                    } catch(e) {
+                        console.log(e)
+                    }
                 }
             }
         )
