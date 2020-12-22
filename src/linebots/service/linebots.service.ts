@@ -198,43 +198,29 @@ export class LinebotsService {
             access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
 
-        async function getMedia() {
-            let request = require('request')
-            request(
-                {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
-                    if(!error && response.statusCode === 200){
-                        try {
-                            let fs = require('fs')
-                            fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary');
-                            let data = fs.readFileSync('/tmp/twitterPost.jpg')
-                            return data
-                        } catch(e) {
-                            throw e
-                        }
+        let request = require('request')
+        request(
+            {method: 'GET', url: media_url, encoding: null}, function (error, response, body){
+                if(!error && response.statusCode === 200){
+                    let fs = require('fs')
+                    fs.writeFileSync('/tmp/twitterPost.jpg', body, 'binary');
+                    let data = fs.readFileSync('/tmp/twitterPost.jpg')
+                    
+                    (async () => {
+                        //画像のアップロード
+                        const media = await client.post('media/upload', {media: data})
+                        console.log(media);
                         
-                    }
+                        //Twitterに投稿
+                        const status = {
+                        status: text,
+                        media_ids: media.media_id_string // Pass the media id string
+                        }
+                        const response = await client.post('statuses/update', status)
+                        console.log(response);
+                    })();
                 }
-            )
-        }
-
-        getMedia()
-        .then(data => {
-            (async () => {
-                //画像のアップロード
-                const media = await client.post('media/upload', {media: data})
-                console.log(media);
-                
-               //Twitterに投稿
-                const status = {
-                status: text,
-                   media_ids: media.media_id_string // Pass the media id string
-                }
-                const response = await client.post('statuses/update', status)
-                    console.log(response);
-            })();
-        })
-        .catch(err => {
-            console.log(err);
-        });
+            }
+        )
     }    
 }
