@@ -211,7 +211,7 @@ export class LinebotsService {
                             const media = await client.post('media/upload', {media: data});
                             console.log(media);
                             
-                           //Twitterに投稿
+                            //Twitterに投稿
                             const status = {
                                 status: text,
                                 media_ids: media.media_id_string // Pass the media id string
