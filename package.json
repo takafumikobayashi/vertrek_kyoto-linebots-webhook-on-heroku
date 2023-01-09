@@ -30,7 +30,7 @@
     "crypto": "^1.0.1",
     "fb": "^2.0.0",
     "firebase": "^9.6.6",
-    "firebase-admin": "^10.0.2",
+    "firebase-admin": "^11.4.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.4",
